@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Garamond:300,300italic,400,400italic,700,700italic%7CPalatino:300,300italic,400,400italic,700,700italic%7CTrebuchet+MS:300,300italic,400,400italic,700,700italic%7CCourier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito2333.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="hexo环境配置，以及一些简单的操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建hexo博客，设置主题">
+<meta property="og:url" content="https://mosquito2333.github.io/2023/02/08/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:site_name" content="一个小仙女的博客">
+<meta property="og:description" content="hexo环境配置，以及一些简单的操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-08T01:19:25.189Z">
+<meta property="article:modified_time" content="2023-02-08T01:19:25.189Z">
+<meta property="article:author" content="mosquito2333">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mosquito2333.github.io/2023/02/08/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mosquito2333.github.io/2023/02/08/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/","path":"2023/02/08/搭建博客/","title":"搭建hexo博客，设置主题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>搭建hexo博客，设置主题 | 一个小仙女的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">一个小仙女的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">mosquito2333 的 Blogs</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="comment fa-fw"></i>guestbook</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%BB%A5%E5%8F%8A%E4%B8%BB%E9%A2%98%E7%9A%84%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">环境搭建以及主题的设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%BB%BC%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">一、综述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.1.1.</span> <span class="nav-text">环境搭建步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98%E8%AE%BE%E7%BD%AE%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.1.2.</span> <span class="nav-text">主题设置步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Hexo%E6%90%AD%E5%BB%BA"><span class="nav-number">1.2.</span> <span class="nav-text">二、Hexo搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.1.</span> <span class="nav-text">环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Git%EF%BC%8CNode-js%EF%BC%8CHexo"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">安装Git，Node.js，Hexo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#GitHub%E5%88%9B%E5%BB%BA%E4%B8%AA%E4%BA%BA%E4%BB%93%E5%BA%93"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">GitHub创建个人仓库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%94%9F%E6%88%90SSH%E6%B7%BB%E5%8A%A0%E5%88%B0GitHub"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">生成SSH添加到GitHub</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%B8%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%B5%E8%84%91%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5"><span class="nav-number">1.2.1.3.1.</span> <span class="nav-text">为自己的电脑生成密钥</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#github%E4%B8%8A%E6%B7%BB%E5%8A%A0%E6%9C%AC%E5%9C%B0%E7%94%9F%E6%88%90%E7%9A%84%E5%AF%86%E9%92%A5"><span class="nav-number">1.2.1.3.2.</span> <span class="nav-text">github上添加本地生成的密钥</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9C%A8gitbash%E4%B8%AD%EF%BC%8C%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E6%88%90%E5%8A%9F"><span class="nav-number">1.2.1.3.3.</span> <span class="nav-text">在gitbash中，查看是否成功</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%86hexo%E9%83%A8%E7%BD%B2%E5%88%B0GitHub"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">将hexo部署到GitHub</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B0%86hexo%E7%94%9F%E6%88%90%E7%9A%84%E6%96%87%E7%AB%A0%E9%83%A8%E7%BD%B2%E5%88%B0GitHub%E4%B8%8A%EF%BC%8C%E6%89%93%E5%BC%80-config-yml%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.1.4.1.</span> <span class="nav-text">将hexo生成的文章部署到GitHub上，打开_config.yml修改配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%B0%B1%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%EF%BC%8C%E7%84%B6%E5%90%8E%E9%83%A8%E7%BD%B2%E5%88%B0github"><span class="nav-number">1.2.1.4.2.</span> <span class="nav-text">开始就本地文件生成静态文件，然后部署到github</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%BF%85%E9%A1%BB%E4%B8%BB%E9%A2%98%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">三、必须主题设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9blogs-x2F-config-yml-%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.1.</span> <span class="nav-text">修改blogs&#x2F;_config.yml 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9blogs-x2F-themes-x2F-next-x2F-config-yml"><span class="nav-number">1.3.2.</span> <span class="nav-text">修改blogs&#x2F;themes&#x2F;next&#x2F;_config.yml</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%B8%AA%E6%80%A7%E5%8C%96%E4%B8%BB%E9%A2%98%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.4.</span> <span class="nav-text">四、个性化主题设置</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito2333"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">mosquito2333</p>
+  <div class="site-description" itemprop="description">随遇而安，寂静生长</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mosquito2333" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mosquito2333" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3030823975@qq.com" title="E-Mail → mailto:3030823975@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/mosquito201809" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;mosquito201809" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" rel="noopener me" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/sun_liwen" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;sun_liwen" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mosquito2333.github.io/2023/02/08/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="mosquito2333">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个小仙女的博客">
+      <meta itemprop="description" content="随遇而安，寂静生长">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="搭建hexo博客，设置主题 | 一个小仙女的博客">
+      <meta itemprop="description" content="hexo环境配置，以及一些简单的操作">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建hexo博客，设置主题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-08 09:19:25" itemprop="dateCreated datePublished" datetime="2023-02-08T09:19:25+08:00">2023-02-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" itemprop="url" rel="index"><span itemprop="name">环境配置</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">hexo环境配置，以及一些简单的操作</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="环境搭建以及主题的设置"><a href="#环境搭建以及主题的设置" class="headerlink" title="环境搭建以及主题的设置"></a>环境搭建以及主题的设置</h2><h3 id="一、综述"><a href="#一、综述" class="headerlink" title="一、综述"></a>一、综述</h3><h4 id="环境搭建步骤"><a href="#环境搭建步骤" class="headerlink" title="环境搭建步骤"></a>环境搭建步骤</h4><p>1、安装Git,Node.js,Hexo<br>2、GitHub创建个人仓库<br>3、将hexo部署到github<br>4、本地开启server查看效果<br>5、deploy到github发布文章</p>
+<h4 id="主题设置步骤"><a href="#主题设置步骤" class="headerlink" title="主题设置步骤"></a>主题设置步骤</h4><p>1、修改blogs&#x2F;_config.yml 文件。设置主题、主题风格以及title等。<br>2、进入主题修改头像、侧边栏、页面显示等。</p>
+<h3 id="二、Hexo搭建"><a href="#二、Hexo搭建" class="headerlink" title="二、Hexo搭建"></a>二、Hexo搭建</h3><h4 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h4><h5 id="安装Git，Node-js，Hexo"><a href="#安装Git，Node-js，Hexo" class="headerlink" title="安装Git，Node.js，Hexo"></a>安装Git，Node.js，Hexo</h5><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/44213627">一个知乎步骤</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">hexo init myblog</span><br><span class="line"><span class="built_in">cd</span> myblog</span><br><span class="line">npm install -- 这一步我没有用，不知道作用</span><br></pre></td></tr></table></figure>
+<p>新建完成后，指定文件夹目录下有：</p>
+<p>node_modules: 依赖包<br>public：存放生成的页面<br>scaffolds：生成文章的一些模板<br>source：用来存放你的文章<br>themes：主题<br>** _config.yml: 博客的配置文件**</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo server</span><br><span class="line">hexo deploy -- 可以选择性进行</span><br></pre></td></tr></table></figure>
+
+<h5 id="GitHub创建个人仓库"><a href="#GitHub创建个人仓库" class="headerlink" title="GitHub创建个人仓库"></a>GitHub创建个人仓库</h5><p>假设你的github名字为 zhangsan<br>仓库名字 zhansan.github.io<br>博客访问网址 <a target="_blank" rel="noopener" href="https://zhansan.github.io/">https://zhansan.github.io</a></p>
+<h5 id="生成SSH添加到GitHub"><a href="#生成SSH添加到GitHub" class="headerlink" title="生成SSH添加到GitHub"></a>生成SSH添加到GitHub</h5><h6 id="为自己的电脑生成密钥"><a href="#为自己的电脑生成密钥" class="headerlink" title="为自己的电脑生成密钥"></a>为自己的电脑生成密钥</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;youremail&quot;</span></span><br></pre></td></tr></table></figure>
+<p>id_rsa是电脑的私人秘钥，id_rsa.pub是公共秘钥。连接github时，会根据github上的公钥匹配你本地的私钥。当顺利匹配，才能使用git进行本地和github之间文件的传输。</p>
+<h6 id="github上添加本地生成的密钥"><a href="#github上添加本地生成的密钥" class="headerlink" title="github上添加本地生成的密钥"></a>github上添加本地生成的密钥</h6><p>在GitHub的setting中，找到SSH keys的设置选项，点击New SSH key 把id_rsa.pub里面的信息复制进去。</p>
+<h6 id="在gitbash中，查看是否成功"><a href="#在gitbash中，查看是否成功" class="headerlink" title="在gitbash中，查看是否成功"></a>在gitbash中，查看是否成功</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+<h5 id="将hexo部署到GitHub"><a href="#将hexo部署到GitHub" class="headerlink" title="将hexo部署到GitHub"></a>将hexo部署到GitHub</h5><h6 id="将hexo生成的文章部署到GitHub上，打开-config-yml修改配置"><a href="#将hexo生成的文章部署到GitHub上，打开-config-yml修改配置" class="headerlink" title="将hexo生成的文章部署到GitHub上，打开_config.yml修改配置"></a>将hexo生成的文章部署到GitHub上，打开_config.yml修改配置</h6><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git项目ssh方式的地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="开始就本地文件生成静态文件，然后部署到github"><a href="#开始就本地文件生成静态文件，然后部署到github" class="headerlink" title="开始就本地文件生成静态文件，然后部署到github"></a>开始就本地文件生成静态文件，然后部署到github</h6><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo server </span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+
+<h3 id="三、必须主题设置"><a href="#三、必须主题设置" class="headerlink" title="三、必须主题设置"></a>三、必须主题设置</h3><h4 id="修改blogs-x2F-config-yml-文件"><a href="#修改blogs-x2F-config-yml-文件" class="headerlink" title="修改blogs&#x2F;_config.yml 文件"></a>修改blogs&#x2F;_config.yml 文件</h4><ul>
+<li>1、修改主题，使用next</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br><span class="line"><span class="comment">#theme: landscape</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2、主题风格，使用默认即可</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Schemes</span></span><br><span class="line"><span class="attr">scheme:</span> <span class="string">Muse</span>  <span class="string">//默认主题</span></span><br><span class="line"><span class="comment">#scheme: Mist</span></span><br><span class="line"><span class="comment">#scheme: Pisces</span></span><br><span class="line"><span class="comment">#scheme: Gemini</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="修改blogs-x2F-themes-x2F-next-x2F-config-yml"><a href="#修改blogs-x2F-themes-x2F-next-x2F-config-yml" class="headerlink" title="修改blogs&#x2F;themes&#x2F;next&#x2F;_config.yml"></a>修改blogs&#x2F;themes&#x2F;next&#x2F;_config.yml</h4><ul>
+<li>1、更改头像</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 图片放置在 source/images/头像.png</span></span><br><span class="line"><span class="attr">avatar:</span> </span><br><span class="line">    <span class="attr">url:</span> <span class="string">/images/头像.png</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2、设置Menu</li>
+</ul>
+<p>默认的只有首页和归档两个,menu配置项中上下的顺序决定了menu显示的顺序。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># When running the site in a subdirectory (e.g. domain.tld/blog), remove the leading slash (/archives -&gt; archives)</span></span><br><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">home:</span> <span class="string">/</span></span><br><span class="line">  <span class="attr">categories:</span> <span class="string">/categories/</span></span><br><span class="line">  <span class="attr">archives:</span> <span class="string">/archives/</span></span><br><span class="line">  <span class="attr">tags:</span> <span class="string">/tags/</span></span><br><span class="line">  <span class="attr">about:</span> <span class="string">/about/</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>3、创建tags</li>
+</ul>
+<p>当选择添加tags之后，还需要创建相应的文件blogs&#x2F;tags，命令如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page <span class="string">&quot;tags&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>最后编辑创建的blogs&#x2F;tags&#x2F;index.md文件，内容如下</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">All</span> <span class="string">tags</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2018-01-20 18:57:48</span></span><br><span class="line"><span class="attr">type:</span> <span class="string">&quot;tags&quot;</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>4、创建abouts、categories</li>
+</ul>
+<p>操作同上<br>使用时，在每篇文章开头添加，可添加多个，如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">categories: </span><br><span class="line"><span class="bullet">-</span> Android</span><br><span class="line">tags:</span><br><span class="line"><span class="bullet">-</span> Android</span><br><span class="line"><span class="section">- RecyclerView</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>5、侧边栏社交信息设置</li>
+</ul>
+<p>编辑主题配置文件_config.yml，修改social字段的值# Social Links</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Key is the link label showing to end users.</span></span><br><span class="line"><span class="comment"># Value is the target link (E.g. GitHub: https://github.com/iissnan)</span></span><br><span class="line"><span class="attr">social:</span></span><br><span class="line">  <span class="comment">#LinkLabel: Link</span></span><br><span class="line">  <span class="attr">Github:</span> <span class="string">https://github.com/yourgithub</span></span><br><span class="line">  <span class="attr">E-Mail:</span> <span class="string">mailto:dawnxu96@gmail.com</span></span><br><span class="line">  <span class="attr">Instagram:</span> <span class="string">https://instagram.com/yourins</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>6、Hexo博客添加站内搜索</p>
+<ul>
+<li><p>NexT主题支持集成 Swiftype、 微搜索、Local Search 和 Algolia。下面介绍Local Search的安装。</p>
+<ul>
+<li><p>安装 hexo-generator-search</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-search --save</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装 hexo-generator-searchdb</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>编辑主题配置文件，设置local_searchenable为true</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Local search</span></span><br><span class="line"><span class="comment"># Dependencies: https://github.com/flashlab/hexo-generator-search</span></span><br><span class="line"><span class="attr">local_search:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># if auto, trigger search by changing input</span></span><br><span class="line">  <span class="comment"># if manual, trigger search by pressing enter key or search button</span></span><br><span class="line">  <span class="attr">trigger:</span> <span class="string">auto</span></span><br><span class="line">  <span class="comment"># show top n results per article, show all results by setting to -1</span></span><br><span class="line">  <span class="attr">top_n_per_article:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="四、个性化主题设置"><a href="#四、个性化主题设置" class="headerlink" title="四、个性化主题设置"></a>四、个性化主题设置</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/463229559">一个基础实用的参照链接（我参照的）</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/28128674">一篇炫酷的页面设置指南（花里胡哨，操作比较费劲）</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/85037898">比较基础（我参照的）</a></p>
+<ul>
+<li>1、首页中一篇文章显示太长，视觉上缩短一下</li>
+</ul>
+<p>方法一：打开文章的markdown文件，例如source&#x2F;_posts&#x2F;hello-world.md。<br>手动设置文章摘要，我们只需在想显示为摘要的内容之后添 <span id="more"></span> 即可。像下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">选取的文章摘要</span><br><span class="line"></span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">正文内容</span><br></pre></td></tr></table></figure>
+<p>方法二：更优雅一些，而不是粗暴截断。即在写文章时，在元信息中指定摘要：description。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> &#123;&#123; <span class="string">title</span> &#125;&#125;</span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line"><span class="attr">categories:</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">点击阅读前文前,</span> <span class="string">首页能看到的文章的简短描述</span></span><br><span class="line"><span class="attr">date:</span> &#123;&#123; <span class="string">date</span> &#125;&#125;</span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>2、Hexo博客添加站内搜索</p>
+<ul>
+<li><p>NexT主题支持集成 Swiftype、 微搜索、Local Search 和 Algolia。下面介绍Local Search的安装。</p>
+<ul>
+<li><p>安装 hexo-generator-search</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-search --save</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装 hexo-generator-searchdb</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>编辑主题配置文件，设置local_searchenable为true</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Local search</span></span><br><span class="line"><span class="comment"># Dependencies: https://github.com/flashlab/hexo-generator-search</span></span><br><span class="line"><span class="attr">local_search:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># if auto, trigger search by changing input</span></span><br><span class="line">  <span class="comment"># if manual, trigger search by pressing enter key or search button</span></span><br><span class="line">  <span class="attr">trigger:</span> <span class="string">auto</span></span><br><span class="line">  <span class="comment"># show top n results per article, show all results by setting to -1</span></span><br><span class="line">  <span class="attr">top_n_per_article:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>mosquito2333
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://mosquito2333.github.io/2023/02/08/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" title="搭建hexo博客，设置主题">https://mosquito2333.github.io/2023/02/08/搭建博客/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/06/docker-%E5%AE%89%E8%A3%85-oracle/" rel="prev" title="docker 安装 oracle">
+                  <i class="fa fa-chevron-left"></i> docker 安装 oracle
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito2333</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"mosquito2333","repo":"mosquito2333_comments","client_id":"3efd199fcf375c5193c0","client_secret":"36622e02f9d0533f53f341c10b3b9563e9c9fe03","admin_user":"mosquito2333","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"bbafa62189701fe787410638c7ae0dba"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
