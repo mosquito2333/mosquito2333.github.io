@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Garamond:300,300italic,400,400italic,700,700italic%7CPalatino:300,300italic,400,400italic,700,700italic%7CTrebuchet+MS:300,300italic,400,400italic,700,700italic%7CCourier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito2333.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="cockroachDB的float类型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="crdb的float类型">
+<meta property="og:url" content="https://mosquito2333.github.io/2023/02/08/crdb%E7%9A%84float%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="一个小仙女的博客">
+<meta property="og:description" content="cockroachDB的float类型">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-08T14:18:04.000Z">
+<meta property="article:modified_time" content="2023-02-08T14:24:27.962Z">
+<meta property="article:author" content="mosquito2333">
+<meta property="article:tag" content="crdb">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mosquito2333.github.io/2023/02/08/crdb%E7%9A%84float%E7%B1%BB%E5%9E%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mosquito2333.github.io/2023/02/08/crdb%E7%9A%84float%E7%B1%BB%E5%9E%8B/","path":"2023/02/08/crdb的float类型/","title":"crdb的float类型"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>crdb的float类型 | 一个小仙女的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">一个小仙女的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">mosquito2333 的 Blogs</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="fa fa-guestbook fa-fw"></i>guestbook</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#float-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">float 类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">存储格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%89%E7%85%A7IEEE754%E5%9B%BD%E9%99%85%E6%A0%87%E5%87%86"><span class="nav-number">1.1.1.</span> <span class="nav-text">按照IEEE754国际标准</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#oracle-%E4%B8%AD%E7%9A%84-float-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.2.</span> <span class="nav-text">oracle 中的 float 类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cockroachDB-%E4%B8%AD%E7%9A%84-float-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.3.</span> <span class="nav-text">cockroachDB 中的 float 类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql-%E4%B8%AD%E7%9A%84-float-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.4.</span> <span class="nav-text">mysql 中的 float 类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E4%BD%8D%E8%88%8D%E5%85%A5%E6%A0%87%E5%87%86"><span class="nav-number">1.1.5.</span> <span class="nav-text">进位舍入标准</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#golang%E4%B8%AD-float%E4%B8%8Estring%E7%9A%84%E7%9B%B8%E4%BA%92%E8%BD%AC%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">golang中 float与string的相互转化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97%E4%B8%80%E4%B8%AAfloat%E8%BD%ACstring-%E5%87%86%E7%A1%AE%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">获得一个float转string 准确的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#float-gt-string"><span class="nav-number">2.2.</span> <span class="nav-text">float-&gt;string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string-gt-float"><span class="nav-number">2.3.</span> <span class="nav-text">string-&gt;float</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito2333"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">mosquito2333</p>
+  <div class="site-description" itemprop="description">随遇而安，寂静生长</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mosquito2333" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mosquito2333" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3030823975@qq.com" title="E-Mail → mailto:3030823975@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/mosquito201809" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;mosquito201809" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" rel="noopener me" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/sun_liwen" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;sun_liwen" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mosquito2333.github.io/2023/02/08/crdb%E7%9A%84float%E7%B1%BB%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="mosquito2333">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个小仙女的博客">
+      <meta itemprop="description" content="随遇而安，寂静生长">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="crdb的float类型 | 一个小仙女的博客">
+      <meta itemprop="description" content="cockroachDB的float类型">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          crdb的float类型
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-02-08 22:18:04 / 修改时间：22:24:27" itemprop="dateCreated datePublished" datetime="2023-02-08T22:18:04+08:00">2023-02-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/cockroachDB/" itemprop="url" rel="index"><span itemprop="name">cockroachDB</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/cockroachDB/dataType/" itemprop="url" rel="index"><span itemprop="name">dataType</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">cockroachDB的float类型</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="float-类型"><a href="#float-类型" class="headerlink" title="float 类型"></a>float 类型</h2><h3 id="存储格式"><a href="#存储格式" class="headerlink" title="存储格式"></a>存储格式</h3><h4 id="按照IEEE754国际标准"><a href="#按照IEEE754国际标准" class="headerlink" title="按照IEEE754国际标准"></a>按照IEEE754国际标准</h4><h4 id="oracle-中的-float-类型"><a href="#oracle-中的-float-类型" class="headerlink" title="oracle 中的 float 类型"></a>oracle 中的 float 类型</h4><ul>
+<li>float</li>
+<li>float(b)<ul>
+<li>binary precision＝int(b*0.30103)，</li>
+<li>因此我们这里实际上的精度应该等于int(2*0.30103)&#x3D;0，即小数点后精度为0。</li>
+</ul>
+</li>
+</ul>
+<h4 id="cockroachDB-中的-float-类型"><a href="#cockroachDB-中的-float-类型" class="headerlink" title="cockroachDB 中的 float 类型"></a>cockroachDB 中的 float 类型</h4><ul>
+<li>float4(32)</li>
+<li>float8(64)</li>
+</ul>
+<h4 id="mysql-中的-float-类型"><a href="#mysql-中的-float-类型" class="headerlink" title="mysql 中的 float 类型"></a>mysql 中的 float 类型</h4><ul>
+<li>float</li>
+<li>float(b)<ul>
+<li>binary precision＝int(b*0.30103)，</li>
+<li>因此我们这里实际上的精度应该等于int(2*0.30103)&#x3D;0，即小数点后精度为0。</li>
+</ul>
+</li>
+</ul>
+<h4 id="进位舍入标准"><a href="#进位舍入标准" class="headerlink" title="进位舍入标准"></a>进位舍入标准</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	<span class="comment">// RoundDown rounds toward 0; truncate.</span></span><br><span class="line">	RoundDown = <span class="string">&quot;down&quot;</span></span><br><span class="line">	<span class="comment">// RoundHalfUp rounds up if the digits are &gt;= 0.5.</span></span><br><span class="line">	RoundHalfUp = <span class="string">&quot;half_up&quot;</span></span><br><span class="line">	<span class="comment">// RoundHalfEven rounds up if the digits are &gt; 0.5. If the digits are equal</span></span><br><span class="line">	<span class="comment">// to 0.5, it rounds up if the previous digit is odd, always producing an</span></span><br><span class="line">	<span class="comment">// even digit.</span></span><br><span class="line">	RoundHalfEven = <span class="string">&quot;half_even&quot;</span></span><br><span class="line">	<span class="comment">// RoundCeiling towards +Inf: rounds up if digits are &gt; 0 and the number</span></span><br><span class="line">	<span class="comment">// is positive.</span></span><br><span class="line">	RoundCeiling = <span class="string">&quot;ceiling&quot;</span></span><br><span class="line">	<span class="comment">// RoundFloor towards -Inf: rounds up if digits are &gt; 0 and the number</span></span><br><span class="line">	<span class="comment">// is negative.</span></span><br><span class="line">	RoundFloor = <span class="string">&quot;floor&quot;</span></span><br><span class="line">	<span class="comment">// RoundHalfDown rounds up if the digits are &gt; 0.5.</span></span><br><span class="line">	RoundHalfDown = <span class="string">&quot;half_down&quot;</span></span><br><span class="line">	<span class="comment">// RoundUp rounds away from 0.</span></span><br><span class="line">	RoundUp = <span class="string">&quot;up&quot;</span></span><br><span class="line">	<span class="comment">// Round05Up rounds zero or five away from 0; same as round-up, except that</span></span><br><span class="line">	<span class="comment">// rounding up only occurs if the digit to be rounded up is 0 or 5.</span></span><br><span class="line">	Round05Up = <span class="string">&quot;05up&quot;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>crdb 与mysql表现是一致的,采用国际标准。而oracle是传统四舍五入</li>
+<li>国际标准 ： 向偶数舍入法（银行家舍入）</li>
+<li>RoundHalfEven rounds up if the digits are &gt; 0.5. If the digits are equal to 0.5,<br>it rounds up if the previous digit is odd,<br>always producing an even digit.</li>
+<li>如果digits &gt; 0.5(e.g. digits &#x3D; 0.51)，RoundHalfEven会向上取整。</li>
+<li>如果数字等于0.5。如果前一个数字是奇数，它就向上舍入。 总是产生一个偶数数字。</li>
+<li>例证：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> concat( round(<span class="built_in">cast</span>(<span class="number">0.125</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="number">2</span>),  <span class="string">&#x27;%&#x27;</span>) <span class="keyword">from</span> dual; <span class="comment">-- mysql/crdb 0.12%, oracle .13%</span></span><br><span class="line"><span class="keyword">select</span> concat( round(<span class="built_in">cast</span>(<span class="number">0.115</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="number">2</span>),  <span class="string">&#x27;%&#x27;</span>) <span class="keyword">from</span> dual; <span class="comment">-- mysql/crdb 0.12%, oracle .12%</span></span><br><span class="line"><span class="keyword">select</span> concat( round(<span class="built_in">cast</span>(<span class="number">0.1251</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="number">2</span>),  <span class="string">&#x27;%&#x27;</span>) <span class="keyword">from</span> dual; <span class="comment">-- mysql/crdb 0.13%, oracle .13%</span></span><br><span class="line"><span class="keyword">select</span> concat( round(<span class="built_in">cast</span>(<span class="number">0.1151</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="number">2</span>),  <span class="string">&#x27;%&#x27;</span>) <span class="keyword">from</span> dual; <span class="comment">-- mysql/crdb 0.12%, oracle .12%</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> round(<span class="built_in">cast</span>(<span class="number">0.125</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="number">2</span>)<span class="operator">||</span><span class="string">&#x27;%&#x27;</span> <span class="keyword">from</span> dual; <span class="comment">-- oracle .13%</span></span><br><span class="line"><span class="keyword">select</span> round(<span class="built_in">cast</span>(<span class="number">0.115</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="number">2</span>)<span class="operator">||</span><span class="string">&#x27;%&#x27;</span> <span class="keyword">from</span> dual; <span class="comment">-- oracle .12%</span></span><br><span class="line"><span class="keyword">select</span> round(<span class="built_in">cast</span>(<span class="number">0.1251</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="number">2</span>)<span class="operator">||</span><span class="string">&#x27;%&#x27;</span> <span class="keyword">from</span> dual; <span class="comment">-- oracle .13%</span></span><br><span class="line"><span class="keyword">select</span> round(<span class="built_in">cast</span>(<span class="number">0.1151</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="number">2</span>)<span class="operator">||</span><span class="string">&#x27;%&#x27;</span> <span class="keyword">from</span> dual; <span class="comment">-- oracle .12%</span></span><br><span class="line"><span class="keyword">select</span> to_char(<span class="built_in">cast</span>(<span class="number">0.5</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="string">&#x27;9&#x27;</span>) <span class="keyword">from</span> dual; <span class="comment">-- mysql/crdb 0, oracle 1</span></span><br><span class="line"><span class="keyword">select</span> to_char(<span class="built_in">cast</span>(<span class="number">0.15</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="string">&#x27;9.9&#x27;</span>) <span class="keyword">from</span> dual; <span class="comment">-- mysql/crdb 0.1, oracle 0.2</span></span><br><span class="line"><span class="keyword">select</span> to_char(<span class="built_in">cast</span>(<span class="number">0.25</span> <span class="keyword">as</span> <span class="type">float</span>),<span class="string">&#x27;9.9&#x27;</span>) <span class="keyword">from</span> dual; <span class="comment">-- mysql/crdb 0.2, oracle 0.3</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="golang中-float与string的相互转化"><a href="#golang中-float与string的相互转化" class="headerlink" title="golang中 float与string的相互转化"></a>golang中 float与string的相互转化</h2><h3 id="获得一个float转string-准确的方式"><a href="#获得一个float转string-准确的方式" class="headerlink" title="获得一个float转string 准确的方式"></a>获得一个float转string 准确的方式</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s = strconv.FormatFloat(value, <span class="string">&#x27;f&#x27;</span>, <span class="number">-1</span>, <span class="number">64</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="float-gt-string"><a href="#float-gt-string" class="headerlink" title="float-&gt;string"></a>float-&gt;string</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FormatFloat converts the floating-point number f to a string,</span></span><br><span class="line"><span class="comment">// according to the format fmt and precision prec. It rounds the</span></span><br><span class="line"><span class="comment">// result assuming that the original was obtained from a floating-point</span></span><br><span class="line"><span class="comment">// value of bitSize bits (32 for float32, 64 for float64).</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The format fmt is one of</span></span><br><span class="line"><span class="comment">// &#x27;b&#x27; (-ddddp±ddd, a binary exponent),</span></span><br><span class="line"><span class="comment">// &#x27;e&#x27; (-d.dddde±dd, a decimal exponent),</span></span><br><span class="line"><span class="comment">// &#x27;E&#x27; (-d.ddddE±dd, a decimal exponent),</span></span><br><span class="line"><span class="comment">// &#x27;f&#x27; (-ddd.dddd, no exponent),</span></span><br><span class="line"><span class="comment">// &#x27;g&#x27; (&#x27;e&#x27; for large exponents, &#x27;f&#x27; otherwise),</span></span><br><span class="line"><span class="comment">// &#x27;G&#x27; (&#x27;E&#x27; for large exponents, &#x27;f&#x27; otherwise),</span></span><br><span class="line"><span class="comment">// &#x27;x&#x27; (-0xd.ddddp±ddd, a hexadecimal fraction and binary exponent), or</span></span><br><span class="line"><span class="comment">// &#x27;X&#x27; (-0Xd.ddddP±ddd, a hexadecimal fraction and binary exponent).</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The precision prec controls the number of digits (excluding the exponent)</span></span><br><span class="line"><span class="comment">// printed by the &#x27;e&#x27;, &#x27;E&#x27;, &#x27;f&#x27;, &#x27;g&#x27;, &#x27;G&#x27;, &#x27;x&#x27;, and &#x27;X&#x27; formats.</span></span><br><span class="line"><span class="comment">// For &#x27;e&#x27;, &#x27;E&#x27;, &#x27;f&#x27;, &#x27;x&#x27;, and &#x27;X&#x27;, it is the number of digits after the decimal point.</span></span><br><span class="line"><span class="comment">// For &#x27;g&#x27; and &#x27;G&#x27; it is the maximum number of significant digits (trailing</span></span><br><span class="line"><span class="comment">// zeros are removed).</span></span><br><span class="line"><span class="comment">// The special precision -1 uses the smallest number of digits</span></span><br><span class="line"><span class="comment">// necessary such that ParseFloat will return f exactly.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">FormatFloat</span><span class="params">(f <span class="type">float64</span>, fmt <span class="type">byte</span>, prec, bitSize <span class="type">int</span>)</span></span> <span class="type">string</span> &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="type">string</span>(genericFtoa(<span class="built_in">make</span>([]<span class="type">byte</span>, <span class="number">0</span>, max(prec+<span class="number">4</span>, <span class="number">24</span>)), f, fmt, prec, bitSize))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="string-gt-float"><a href="#string-gt-float" class="headerlink" title="string-&gt;float"></a>string-&gt;float</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ParseFloat converts the string s to a floating-point number</span></span><br><span class="line"><span class="comment">// with the precision specified by bitSize: 32 for float32, or 64 for float64.</span></span><br><span class="line"><span class="comment">// When bitSize=32, the result still has type float64, but it will be</span></span><br><span class="line"><span class="comment">// convertible to float32 without changing its value.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// ParseFloat accepts decimal and hexadecimal floating-point number syntax.</span></span><br><span class="line"><span class="comment">// If s is well-formed and near a valid floating-point number,</span></span><br><span class="line"><span class="comment">// ParseFloat returns the nearest floating-point number rounded</span></span><br><span class="line"><span class="comment">// using IEEE754 unbiased rounding.</span></span><br><span class="line"><span class="comment">// (Parsing a hexadecimal floating-point value only rounds when</span></span><br><span class="line"><span class="comment">// there are more bits in the hexadecimal representation than</span></span><br><span class="line"><span class="comment">// will fit in the mantissa.)</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The errors that ParseFloat returns have concrete type *NumError</span></span><br><span class="line"><span class="comment">// and include err.Num = s.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// If s is not syntactically well-formed, ParseFloat returns err.Err = ErrSyntax.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// If s is syntactically well-formed but is more than 1/2 ULP</span></span><br><span class="line"><span class="comment">// away from the largest floating point number of the given size,</span></span><br><span class="line"><span class="comment">// ParseFloat returns f = ±Inf, err.Err = ErrRange.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// ParseFloat recognizes the strings &quot;NaN&quot;, and the (possibly signed) strings &quot;Inf&quot; and &quot;Infinity&quot;</span></span><br><span class="line"><span class="comment">// as their respective special floating point values. It ignores case when matching.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ParseFloat</span><span class="params">(s <span class="type">string</span>, bitSize <span class="type">int</span>)</span></span> (<span class="type">float64</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	f, n, err := parseFloatPrefix(s, bitSize)</span><br><span class="line">	<span class="keyword">if</span> n != <span class="built_in">len</span>(s) &amp;&amp; (err == <span class="literal">nil</span> || err.(*NumError).Err != ErrSyntax) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>, syntaxError(fnParseFloat, s)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f, err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">parseFloatPrefix</span><span class="params">(s <span class="type">string</span>, bitSize <span class="type">int</span>)</span></span> (<span class="type">float64</span>, <span class="type">int</span>, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> bitSize == <span class="number">32</span> &#123;</span><br><span class="line">		f, n, err := atof32(s)</span><br><span class="line">		<span class="keyword">return</span> <span class="type">float64</span>(f), n, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> atof64(s)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>mosquito2333
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://mosquito2333.github.io/2023/02/08/crdb%E7%9A%84float%E7%B1%BB%E5%9E%8B/" title="crdb的float类型">https://mosquito2333.github.io/2023/02/08/crdb的float类型/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/crdb/" rel="tag"># crdb</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/08/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="搭建hexo博客，设置主题">
+                  <i class="fa fa-chevron-left"></i> 搭建hexo博客，设置主题
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito2333</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/mosquito2333" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"mosquito2333","repo":"mosquito2333_comments","client_id":"3efd199fcf375c5193c0","client_secret":"36622e02f9d0533f53f341c10b3b9563e9c9fe03","admin_user":"mosquito2333","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"b5ecee3b751c178492ed0de0d7de97d9"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
