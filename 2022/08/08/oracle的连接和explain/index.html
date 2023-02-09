@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Garamond:300,300italic,400,400italic,700,700italic%7CPalatino:300,300italic,400,400italic,700,700italic%7CTrebuchet+MS:300,300italic,400,400italic,700,700italic%7CCourier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito2333.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="记录一下oracle explain的多种简单使用方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="oracle的连接和explain">
+<meta property="og:url" content="https://mosquito2333.github.io/2022/08/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/index.html">
+<meta property="og:site_name" content="一个小仙女的博客">
+<meta property="og:description" content="记录一下oracle explain的多种简单使用方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-08T14:29:35.000Z">
+<meta property="article:modified_time" content="2023-02-09T06:10:27.823Z">
+<meta property="article:author" content="mosquito2333">
+<meta property="article:tag" content="oracle">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mosquito2333.github.io/2022/08/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mosquito2333.github.io/2022/08/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/","path":"2022/08/08/oracle的连接和explain/","title":"oracle的连接和explain"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>oracle的连接和explain | 一个小仙女的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">一个小仙女的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">mosquito2333 的 Blogs</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="fa fa-guestbook fa-fw"></i>guestbook</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%BF%9E%E6%8E%A5oracle"><span class="nav-number">1.</span> <span class="nav-text">一、连接oracle</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#oracle%E8%BF%90%E8%A1%8C%E4%B8%80%E4%B8%AAcsv%E6%96%87%E4%BB%B6%EF%BC%8C%E5%B9%B6%E5%B0%86%E7%BB%93%E6%9E%9C%E8%BE%93%E5%87%BA%E5%88%B0%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">oracle运行一个csv文件，并将结果输出到一个文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%85%AD%E7%A7%8D%E6%9F%A5%E7%9C%8B%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">二、六种查看执行计划的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Oracle%E6%8F%90%E4%BE%9B%E4%BA%866%E7%A7%8D%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95%EF%BC%8C%E5%90%84%E7%A7%8D%E6%96%B9%E6%B3%95%E4%BE%A7%E9%87%8D%E7%82%B9%E4%B8%8D%E5%90%8C%E3%80%82"><span class="nav-number">2.1.</span> <span class="nav-text">Oracle提供了6种执行计划获取方法，各种方法侧重点不同。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D-%EF%BC%9Aexplain-for"><span class="nav-number">2.2.</span> <span class="nav-text">第一种 ：explain for</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%EF%BC%9Aset-autotrace-on"><span class="nav-number">2.3.</span> <span class="nav-text">第二种：set autotrace on</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%A7%8D%EF%BC%9A%EF%BC%883%EF%BC%89statistics-level-x3D-all"><span class="nav-number">2.4.</span> <span class="nav-text">第三种：（3）statistics_level&#x3D;all</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E7%A7%8D%EF%BC%9Adbms-xplan-display-cursor%E8%8E%B7%E5%8F%96"><span class="nav-number">2.5.</span> <span class="nav-text">第四种：dbms_xplan.display_cursor获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%A7%8D%EF%BC%9A%E4%BA%8B%E4%BB%B610046-trace%E8%B7%9F%E8%B8%AA"><span class="nav-number">2.6.</span> <span class="nav-text">第五种：事件10046 trace跟踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E7%A7%8D%EF%BC%9Aawrsqrpt-sql"><span class="nav-number">2.7.</span> <span class="nav-text">第六种：awrsqrpt.sql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9"><span class="nav-number">2.8.</span> <span class="nav-text">如何选择</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito2333"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">mosquito2333</p>
+  <div class="site-description" itemprop="description">随遇而安，寂静生长</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mosquito2333" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mosquito2333" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3030823975@qq.com" title="E-Mail → mailto:3030823975@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/mosquito201809" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;mosquito201809" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" rel="noopener me" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/sun_liwen" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;sun_liwen" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mosquito2333.github.io/2022/08/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="mosquito2333">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个小仙女的博客">
+      <meta itemprop="description" content="随遇而安，寂静生长">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="oracle的连接和explain | 一个小仙女的博客">
+      <meta itemprop="description" content="记录一下oracle explain的多种简单使用方法">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          oracle的连接和explain
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-08 22:29:35" itemprop="dateCreated datePublished" datetime="2022-08-08T22:29:35+08:00">2022-08-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-09 14:10:27" itemprop="dateModified" datetime="2023-02-09T14:10:27+08:00">2023-02-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/oracle/" itemprop="url" rel="index"><span itemprop="name">oracle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/oracle/test/" itemprop="url" rel="index"><span itemprop="name">test</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">记录一下oracle explain的多种简单使用方法</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="一、连接oracle"><a href="#一、连接oracle" class="headerlink" title="一、连接oracle"></a>一、连接oracle</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sunbindeMacBook-Pro:proj sunbin$ ssh root@10.16.30.84</span><br><span class="line">oracle@10.16.30.84&#x27;s password: 111111</span><br><span class="line">[oracle@tc84 ~]$ unset http_proxy https_proxy</span><br><span class="line">sqlplus /nolog</span><br><span class="line">conn c##xl/cxl</span><br></pre></td></tr></table></figure>
+
+<h3 id="oracle运行一个csv文件，并将结果输出到一个文件"><a href="#oracle运行一个csv文件，并将结果输出到一个文件" class="headerlink" title="oracle运行一个csv文件，并将结果输出到一个文件"></a>oracle运行一个csv文件，并将结果输出到一个文件</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span>  sqlplus c##xl<span class="operator">/</span>cxl</span><br><span class="line">spool <span class="keyword">on</span></span><br><span class="line">spool <span class="operator">/</span>root<span class="operator">/</span>mosquito_test<span class="operator">/</span>mosquito_test.csv</span><br><span class="line">@<span class="operator">/</span>root<span class="operator">/</span>mosquito_test<span class="operator">/</span>mosquito_test.sql</span><br><span class="line">spool off</span><br><span class="line">quit</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、六种查看执行计划的方法"><a href="#二、六种查看执行计划的方法" class="headerlink" title="二、六种查看执行计划的方法"></a>二、六种查看执行计划的方法</h2><p>（1）explain plan for<br>（2）set autotrace on<br>（3）statistics_level&#x3D;all<br>（4）dbms_xplan.display_cursor获取<br>（5）事件10046 trace跟踪<br>（6）awrsqrpt.sql</p>
+<h3 id="Oracle提供了6种执行计划获取方法，各种方法侧重点不同。"><a href="#Oracle提供了6种执行计划获取方法，各种方法侧重点不同。" class="headerlink" title="Oracle提供了6种执行计划获取方法，各种方法侧重点不同。"></a>Oracle提供了6种执行计划获取方法，各种方法侧重点不同。</h3><h3 id="第一种-：explain-for"><a href="#第一种-：explain-for" class="headerlink" title="第一种 ：explain for"></a>第一种 ：explain for</h3><pre><code>步骤一：explain paln for  查询sql语句
+步骤二：select * from table(dbms_xplan.display());
+</code></pre>
+<p>&#x2F;*<br>优点：无需真正执行，快捷方便；<br>缺点：1.没有输出相关统计信息，例如产生了多少逻辑读，多少次物理读，多少次递归调用的情况；<br>2.无法判断处理了多少行；<br>3.无法判断表执行了多少次<br>*&#x2F;</p>
+<h3 id="第二种：set-autotrace-on"><a href="#第二种：set-autotrace-on" class="headerlink" title="第二种：set autotrace on"></a>第二种：set autotrace on</h3><pre><code>  步骤一：sql&gt; set autotrace on traceonly;
+
+  步骤二：sql&gt; 执行查询Sql语句
+
+  步骤三：sql&gt; set autotrace off;
+</code></pre>
+<p>&#x2F;*<br>优点：1.可以输出运行时的相关统计信息（产生多少逻辑读、多少次递归调用、多少次物理读等）；<br>2.虽然要等语句执行完才能输出执行计划，但是可以有traceonly开关来控制返回结果不打屏输出；<br>缺点：1.必须要等SQL语句执行完，才出结果；<br>2.无法看到表被访问了多少次；<br>*&#x2F;</p>
+<h3 id="第三种：（3）statistics-level-x3D-all"><a href="#第三种：（3）statistics-level-x3D-all" class="headerlink" title="第三种：（3）statistics_level&#x3D;all"></a>第三种：（3）statistics_level&#x3D;all</h3><p>步骤一：ALTER SESSION SET STATISTICS_LEVEL&#x3D;ALL;<br>步骤二：执行待分析的SQL<br>步骤三：select * from table(dbms_xplan.display_cursor(null,null,’allstats last’));<br>&#x2F;*<br>关键字解读：<br>1.starts：SQL执行的次数；<br>2.E-Rows：执行计划预计返回的行数；<br>3.R-Rows：执行计划实际返回的行数；<br>4.A-Time：每一步执行的时间(HH:MM:SS.FF)，根据这一行可知SQL耗时在哪些地方；<br>5.Buffers：每一步实际执行的逻辑读或一致性读；<br>6.Reads：物理读；<br>7.OMem：OMem为最优执行模式所需的内存评估值， 这个数据是由优化器统计数据以及前一次执行的性能数据估算得出的；<br>8.1Mem：1Mem为one-pass模式所需的内存评估值，当工作区大小无法满足操作所需的大小时，需要将部分数据写入临时磁盘空间中(如果仅需要写入一次就可以完成操作，就称一次通过，One-Pass;否则为多次通过，Multi-Pass).该列数据为语句最后一次执行中，单次写磁盘所需要的内存大小，这个由优化器统计数据以及前一次执行的性能数据估算得出的<br>9.Used_Mem：Used-Mem则为当前操作实际执行时消耗的内存，括号里面为(发生磁盘交换的次数,1次即为One-Pass,大于1次则为Multi_Pass,如果没有使用磁盘，则显示0)<br>*&#x2F;</p>
+<p>&#x2F;*<br>优点：1.可以清晰的从starts得出表被访问多少次；<br>2.可以从E-Rows和A-Rows得到预测的行数和真实的行数，从而可以准确判断Oracle评估是否准确；<br>3.虽然没有准确的输出运行时的相关统计信息，但是执行计划中的Buffers就是真实的逻辑读的数值；<br>缺点：1.必须要等执行完后才能输出结果；<br>2.无法控制结果打屏输出，不像autotrace可以设置traceonly保证不输出结果；<br>3.看不出递归调用，看不出物理读的数值<br>*&#x2F;</p>
+<h3 id="第四种：dbms-xplan-display-cursor获取"><a href="#第四种：dbms-xplan-display-cursor获取" class="headerlink" title="第四种：dbms_xplan.display_cursor获取"></a>第四种：dbms_xplan.display_cursor获取</h3><pre><code>步骤1：select * from table( dbms_xplan.display_cursor(&#39;&amp;sql_id&#39;) );    --该方法是从共享池得到，如果SQL已被age out出share pool，则查找不到
+</code></pre>
+<p>注释：<br>1.还有1种方法，select * from table( dbms_xplan.display_awr(‘&amp;sql_id’) );  –该方法是从awr性能视图里面获取<br>2.如果有多个执行计划，可用以下方法查出：<br>select * from table(dbms_xplan.display_cursor(‘&amp;sql_id’,0));<br>select * from table(dbms_xplan.display_cursor(‘&amp;s ql_id’,1));</p>
+<p>&#x2F;*<br>优点：1.知道sql_id即可得到执行计划，与explain plan for一样无需执行；<br>2.可得到真实的执行计划</p>
+<p>缺点：1.没有输出运行的统计相关信息；<br>2.无法判断处理了多少行；<br>3.无法判断表被访问了多少次；<br>*&#x2F;</p>
+<h3 id="第五种：事件10046-trace跟踪"><a href="#第五种：事件10046-trace跟踪" class="headerlink" title="第五种：事件10046 trace跟踪"></a>第五种：事件10046 trace跟踪</h3><p>&#x2F;*<br>步骤1：alter session set events ‘10046 trace name context forever,level 12’;            –开启追踪<br>步骤2：执行sql语句；<br>步骤3：alter session set events ‘10046 trace name context off’;                                 –关闭追踪<br>步骤4：select tracefile from v$process where addr&#x3D;(select paddr from v$session where sid&#x3D;(select sid from v$mystat where rownum&lt;&#x3D;1));       –找到跟踪后产生的文件<br>步骤5：tkprof  trc文件    生成目标文件  sys&#x3D;no sort&#x3D;prsela,exeela,fchela                           –格式化命令<br>*&#x2F;</p>
+<h3 id="第六种：awrsqrpt-sql"><a href="#第六种：awrsqrpt-sql" class="headerlink" title="第六种：awrsqrpt.sql"></a>第六种：awrsqrpt.sql</h3><p>&#x2F;*<br>步骤1：@?&#x2F;rdbms&#x2F;admin&#x2F;awrsqrpt.sql<br>步骤2：选择你要的断点（begin snap和end snap）<br>步骤3：输入要查看的sql_id<br>*&#x2F;</p>
+<p>例子：<br>见：使用awrsqrpt.sql查看执行计划demo</p>
+<h3 id="如何选择"><a href="#如何选择" class="headerlink" title="如何选择"></a>如何选择</h3><p>选择时一般遵循以下规则：<br>1.如果sql执行很长时间才出结果或返回不了结果，用方法1：explain plan for<br>2.跟踪某条sql最简单的方法是方法1：explain plan for，其次是方法2：set autotrace on<br>3.如果相关查询某个sql多个执行计划的情况，只能用方法4：dbms_xplan.display_cursor或方法6：awrsqrpt.sql<br>4.如果sql中含有函数，函数中有含有sql，即存在多层调用，想准确分析只能用方法5：10046追踪<br>5.想法看到真实的执行计划，不能用方法1：explain plan for和方法2：set autotrace on<br>6.想要获取表被访问的次数，只能用方法3：statistics_level &#x3D; all</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>mosquito2333
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://mosquito2333.github.io/2022/08/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/" title="oracle的连接和explain">https://mosquito2333.github.io/2022/08/08/oracle的连接和explain/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/oracle/" rel="tag"># oracle</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/08/01/Test-Oracle-Random/" rel="prev" title="Test Oracle Random">
+                  <i class="fa fa-chevron-left"></i> Test Oracle Random
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/01/opt%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E8%A7%A3%E8%AF%BB/" rel="next" title="opt官方文档解读">
+                  opt官方文档解读 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito2333</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/mosquito2333" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"mosquito2333","repo":"mosquito2333_comments","client_id":"3efd199fcf375c5193c0","client_secret":"36622e02f9d0533f53f341c10b3b9563e9c9fe03","admin_user":"mosquito2333","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"76d330e12fb78d5da9a126508ab2a796"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

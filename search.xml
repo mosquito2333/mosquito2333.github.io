@@ -16,7 +16,7 @@
   </entry>
   <entry>
     <title>Test Oracle Random</title>
-    <url>/2023/02/01/Test-Oracle-Random/</url>
+    <url>/2022/08/01/Test-Oracle-Random/</url>
     <content><![CDATA[<h3 id="以下测试用例证明where后面的random函数每行数据都会跑一遍"><a href="#以下测试用例证明where后面的random函数每行数据都会跑一遍" class="headerlink" title="以下测试用例证明where后面的random函数每行数据都会跑一遍"></a>以下测试用例证明where后面的random函数每行数据都会跑一遍</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- pg  &amp; crdb</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tr1114(c1 <span class="type">int</span> ,c2 <span class="type">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">select</span> generate_series(<span class="number">1</span>,<span class="number">10000</span>),generate_series(<span class="number">1</span>,<span class="number">10000</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tr1114 <span class="keyword">where</span> c2<span class="operator">=</span><span class="built_in">cast</span>((random()<span class="operator">*</span><span class="number">10000</span>)<span class="keyword">as</span> <span class="type">int</span>);</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id2 <span class="operator">=</span> trunc(random()<span class="operator">*</span><span class="number">10</span>);</span><br><span class="line">id1 <span class="operator">|</span> id2</span><br><span class="line"><span class="comment">-----+-----</span></span><br><span class="line">   <span class="number">4</span> <span class="operator">|</span>   <span class="number">4</span></span><br><span class="line">   <span class="number">7</span> <span class="operator">|</span>   <span class="number">7</span></span><br><span class="line">(<span class="number">2</span> <span class="keyword">rows</span>)</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id2 <span class="operator">=</span> trunc(random()<span class="operator">*</span><span class="number">10</span>);</span><br><span class="line">id1 <span class="operator">|</span> id2</span><br><span class="line"><span class="comment">-----+-----</span></span><br><span class="line">   <span class="number">6</span> <span class="operator">|</span>   <span class="number">6</span></span><br><span class="line">   <span class="number">0</span> <span class="operator">|</span>   <span class="number">0</span></span><br><span class="line">(<span class="number">2</span> <span class="keyword">rows</span>)</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id2 <span class="operator">=</span> trunc(random()<span class="operator">*</span><span class="number">10</span>);</span><br><span class="line">id1 <span class="operator">|</span> id2</span><br><span class="line"><span class="comment">-----+-----</span></span><br><span class="line">   <span class="number">5</span> <span class="operator">|</span>   <span class="number">5</span></span><br><span class="line">(<span class="number">1</span> <span class="type">row</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- oracle :</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tr1114(c1 <span class="type">int</span> ,c2 <span class="type">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">5</span>,<span class="number">5</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">6</span>,<span class="number">6</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">7</span>,<span class="number">7</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">8</span>,<span class="number">8</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">9</span>,<span class="number">9</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">values</span>(<span class="number">10</span>,<span class="number">10</span>);</span><br><span class="line"><span class="comment">-- 创建一张大数据量的表</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">select</span> <span class="keyword">distinct</span> tr1114.c1 <span class="operator">+</span> <span class="number">1341</span>,tr1114.c2<span class="operator">+</span> <span class="number">5173</span> <span class="keyword">from</span> tr1114;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">select</span> <span class="keyword">distinct</span> tr1114.c1 <span class="operator">+</span> <span class="number">1341</span>,tr1114.c2<span class="operator">+</span> <span class="number">5173</span> <span class="keyword">from</span> tr1114;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">select</span> <span class="keyword">distinct</span> tr1114.c1 <span class="operator">+</span> <span class="number">116</span>,tr1114.c2<span class="operator">+</span> <span class="number">1273</span> <span class="keyword">from</span> tr1114;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">select</span> <span class="keyword">distinct</span> tr1114.c1<span class="operator">*</span><span class="number">2</span>,tr1114.c2<span class="operator">*</span><span class="number">3</span> <span class="keyword">from</span> tr1114;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tr1114 <span class="keyword">where</span> c2<span class="operator">=</span><span class="built_in">cast</span>(dbms_random.value<span class="operator">*</span><span class="number">10000</span> <span class="keyword">as</span> <span class="type">int</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id2 <span class="operator">=</span> trunc(random()<span class="operator">*</span><span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tr1114 <span class="keyword">where</span> c2<span class="operator">=</span><span class="built_in">cast</span>(dbms_random.value<span class="operator">*</span><span class="number">10000</span> <span class="keyword">as</span> <span class="type">int</span>);</span><br><span class="line"></span><br><span class="line">C1	   C2</span><br><span class="line"><span class="comment">---------- ----------</span></span><br><span class="line">       <span class="number">106</span>	  <span class="number">106</span></span><br><span class="line">       <span class="number">128</span>	  <span class="number">128</span></span><br><span class="line">      <span class="number">2112</span>	 <span class="number">2112</span></span><br><span class="line">      <span class="number">9856</span>	 <span class="number">9856</span></span><br></pre></td></tr></table></figure>
 
@@ -46,7 +46,7 @@
   </entry>
   <entry>
     <title>crdb的float类型</title>
-    <url>/2023/02/08/crdb%E7%9A%84float%E7%B1%BB%E5%9E%8B/</url>
+    <url>/2022/03/10/crdb%E7%9A%84float%E7%B1%BB%E5%9E%8B/</url>
     <content><![CDATA[<h2 id="float-类型"><a href="#float-类型" class="headerlink" title="float 类型"></a>float 类型</h2><h3 id="存储格式"><a href="#存储格式" class="headerlink" title="存储格式"></a>存储格式</h3><h4 id="按照IEEE754国际标准"><a href="#按照IEEE754国际标准" class="headerlink" title="按照IEEE754国际标准"></a>按照IEEE754国际标准</h4><h4 id="oracle-中的-float-类型"><a href="#oracle-中的-float-类型" class="headerlink" title="oracle 中的 float 类型"></a>oracle 中的 float 类型</h4><ul>
 <li>float</li>
 <li>float(b)<ul>
@@ -91,19 +91,8 @@
       </tags>
   </entry>
   <entry>
-    <title>使用github时出现的问题</title>
-    <url>/2023/02/08/github%E6%93%8D%E4%BD%9C%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h2 id="出现问题"><a href="#出现问题" class="headerlink" title="出现问题"></a>出现问题</h2><h3 id="一、github-密钥过期"><a href="#一、github-密钥过期" class="headerlink" title="一、github 密钥过期"></a>一、github 密钥过期</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(gnome-ssh-askpass:161204): Gtk-WARNING **: 10:59:43.256: cannot open display:</span><br><span class="line">error: unable to read askpass response from &#x27;/usr/libexec/openssh/gnome-ssh-askpass&#x27;</span><br><span class="line">Password for &#x27;https://mosquito2333@github.com&#x27;:</span><br><span class="line">git: &#x27;credential-wincred&#x27; is not a git command. See &#x27;git --help&#x27;.</span><br><span class="line">remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.</span><br><span class="line">remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.</span><br><span class="line">fatal: Authentication failed for &#x27;https://github.com/mosquito2333/cockroach.git/&#x27;</span><br></pre></td></tr></table></figure>
-
-<h4 id="解决方法：生成自己的token"><a href="#解决方法：生成自己的token" class="headerlink" title="解决方法：生成自己的token"></a>解决方法：生成自己的token</h4><p>1、登陆自己的github账号，个人设置 setting<br>2、setting –&gt; developer setting –&gt; personal access tokens –&gt; generate new token(选项全选)<br>3、保存该token  xxxxxxx<br>4、git remote set-url origin <a href="https://xxxxxxx@github.com/mosquito2333/cockroach.git">https://xxxxxxx@github.com/mosquito2333/cockroach.git</a><br>git remote set-url slwcrdb <a href="https://xxxxxxx@github.com/mosquito2333/cockroach.git">https://xxxxxxx@github.com/mosquito2333/cockroach.git</a></p>
-]]></content>
-      <categories>
-        <category>环境配置</category>
-      </categories>
-  </entry>
-  <entry>
     <title>docker 安装 oracle</title>
-    <url>/2023/02/06/docker-%E5%AE%89%E8%A3%85-oracle/</url>
+    <url>/2021/12/06/docker-%E5%AE%89%E8%A3%85-oracle/</url>
     <content><![CDATA[<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><p><a href="https://betteryuan.top/article/2020/5/18/46.html">参考文章</a></p>
 <h3 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h3><h4 id="拉取oracle的docker镜像"><a href="#拉取oracle的docker镜像" class="headerlink" title="拉取oracle的docker镜像"></a>拉取oracle的docker镜像</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo docker pull sath89/oracle-12c</span><br><span class="line">sudo docker run -d --name oracle -p 8080:8080 -p 1521:1521 -v YOURPATH:/mnt -e TZ=Asia/Shanghai sath89/oracle-12c</span><br><span class="line">docker <span class="built_in">exec</span> -it YOURCERTAIINID /bin/bash</span><br></pre></td></tr></table></figure>
 <h4 id="安装阿里docker源"><a href="#安装阿里docker源" class="headerlink" title="安装阿里docker源"></a>安装阿里docker源</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/docker/daemon.json</span><br></pre></td></tr></table></figure>
@@ -145,8 +134,19 @@
       </tags>
   </entry>
   <entry>
+    <title>使用github时出现的问题</title>
+    <url>/2023/02/08/github%E6%93%8D%E4%BD%9C%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h2 id="出现问题"><a href="#出现问题" class="headerlink" title="出现问题"></a>出现问题</h2><h3 id="一、github-密钥过期"><a href="#一、github-密钥过期" class="headerlink" title="一、github 密钥过期"></a>一、github 密钥过期</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(gnome-ssh-askpass:161204): Gtk-WARNING **: 10:59:43.256: cannot open display:</span><br><span class="line">error: unable to read askpass response from &#x27;/usr/libexec/openssh/gnome-ssh-askpass&#x27;</span><br><span class="line">Password for &#x27;https://mosquito2333@github.com&#x27;:</span><br><span class="line">git: &#x27;credential-wincred&#x27; is not a git command. See &#x27;git --help&#x27;.</span><br><span class="line">remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.</span><br><span class="line">remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.</span><br><span class="line">fatal: Authentication failed for &#x27;https://github.com/mosquito2333/cockroach.git/&#x27;</span><br></pre></td></tr></table></figure>
+
+<h4 id="解决方法：生成自己的token"><a href="#解决方法：生成自己的token" class="headerlink" title="解决方法：生成自己的token"></a>解决方法：生成自己的token</h4><p>1、登陆自己的github账号，个人设置 setting<br>2、setting –&gt; developer setting –&gt; personal access tokens –&gt; generate new token(选项全选)<br>3、保存该token  xxxxxxx<br>4、git remote set-url origin <a href="https://xxxxxxx@github.com/mosquito2333/cockroach.git">https://xxxxxxx@github.com/mosquito2333/cockroach.git</a><br>git remote set-url slwcrdb <a href="https://xxxxxxx@github.com/mosquito2333/cockroach.git">https://xxxxxxx@github.com/mosquito2333/cockroach.git</a></p>
+]]></content>
+      <categories>
+        <category>环境配置</category>
+      </categories>
+  </entry>
+  <entry>
     <title>how-to-choose-db-index-keys</title>
-    <url>/2023/02/09/how-to-choose-db-index-keys/</url>
+    <url>/2022/03/21/how-to-choose-db-index-keys/</url>
     <content><![CDATA[<h3 id="crdb官方blog"><a href="#crdb官方blog" class="headerlink" title="crdb官方blog"></a><a href="https://www.cockroachlabs.com/blog/how-to-choose-db-index-keys/">crdb官方blog</a></h3><h3 id="3-Basic-Rules-for-Choosing-Indexes"><a href="#3-Basic-Rules-for-Choosing-Indexes" class="headerlink" title="3 Basic Rules for Choosing Indexes"></a>3 Basic Rules for Choosing Indexes</h3><p>There are a few basic rules to keep in mind when choosing indexes for a database. A good index should have these three properties:</p>
 <p>Usefulness: Speed up the execution of some queries (or enforce a constraint)<br>Clustering: Keep records that are likely to be accessed together near each other<br>Scattering: Keep records that are unlikely to be accessed together far apart</p>
 <h4 id="Usefulness"><a href="#Usefulness" class="headerlink" title="Usefulness"></a>Usefulness</h4><p>The first rule is simply a reminder that indexes aren’t free, and if it’s not helping the application somehow you’re better off without it.<br>Each additional index makes all writes to the table slower, but they can make some reads much faster.<br>The best case for write performance is a table with a primary key but no secondary indexes.<br>The first secondary index has a high cost because it means any insert to the table becomes a distributed transaction, but the cost of each additional secondary index is smaller.<br>Do not let this scare you away from secondary indexes, however. They’re not free, but they have such a transformative impact on read performance that it’s nearly always worthwhile to ensure that every query you run has a suitable index.<br>Note that in CockroachDB it’s never helpful to remove the primary key. The database will create a hidden primary key for any table that doesn’t have one, and this hidden key cannot be used by any queries, so it’s always better to have a real primary key that you choose.<br>慎用索引，索引的目的是读的快，但是会导致写的慢。<br>最好的写性能的例子是一个有主键但是没有二级索引的表。<br>第一个二级索引的代价是很高的，因为它意味着任何对表的插入操作会变成一个分布式事务。但是每一个补充二级索引的代价是很小的。</p>
@@ -162,7 +162,7 @@
   </entry>
   <entry>
     <title>oracle的连接和explain</title>
-    <url>/2023/02/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/</url>
+    <url>/2022/08/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/</url>
     <content><![CDATA[<h2 id="一、连接oracle"><a href="#一、连接oracle" class="headerlink" title="一、连接oracle"></a>一、连接oracle</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sunbindeMacBook-Pro:proj sunbin$ ssh root@10.16.30.84</span><br><span class="line">oracle@10.16.30.84&#x27;s password: 111111</span><br><span class="line">[oracle@tc84 ~]$ unset http_proxy https_proxy</span><br><span class="line">sqlplus /nolog</span><br><span class="line">conn c##xl/cxl</span><br></pre></td></tr></table></figure>
 
 <h3 id="oracle运行一个csv文件，并将结果输出到一个文件"><a href="#oracle运行一个csv文件，并将结果输出到一个文件" class="headerlink" title="oracle运行一个csv文件，并将结果输出到一个文件"></a>oracle运行一个csv文件，并将结果输出到一个文件</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span>  sqlplus c##xl<span class="operator">/</span>cxl</span><br><span class="line">spool <span class="keyword">on</span></span><br><span class="line">spool <span class="operator">/</span>root<span class="operator">/</span>mosquito_test<span class="operator">/</span>mosquito_test.csv</span><br><span class="line">@<span class="operator">/</span>root<span class="operator">/</span>mosquito_test<span class="operator">/</span>mosquito_test.sql</span><br><span class="line">spool off</span><br><span class="line">quit</span><br></pre></td></tr></table></figure>
@@ -197,6 +197,54 @@
       </categories>
       <tags>
         <tag>oracle</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>sqllogictest</title>
+    <url>/2022/03/10/sqllogictest/</url>
+    <content><![CDATA[<h3 id="在cockroachDB中设计的位置为pkg-x2F-sql-x2F-logictest-x2F-logic-go"><a href="#在cockroachDB中设计的位置为pkg-x2F-sql-x2F-logictest-x2F-logic-go" class="headerlink" title="在cockroachDB中设计的位置为pkg&#x2F;sql&#x2F;logictest&#x2F;logic.go"></a>在cockroachDB中设计的位置为pkg&#x2F;sql&#x2F;logictest&#x2F;logic.go</h3><p>更多用法也可以参照sqllogictest <a href="https://www.sqlite.org/sqllogictest/doc/trunk/about.wiki">官方文档</a><br>    1、注释：#<br>    2、不要求返回结果的语句（如建表，增删改）：<br>    3、每个语句后接一个SQL命令，预期成功ok，预期失败error<br>        statement ok	#注意末尾不要加  ‘;’<br>        statement error	</p>
+<h3 id="查询语句"><a href="#查询语句" class="headerlink" title="查询语句"></a>查询语句</h3><h4 id="1、预期返回结果并进行比较"><a href="#1、预期返回结果并进行比较" class="headerlink" title="1、预期返回结果并进行比较"></a>1、预期返回结果并进行比较</h4><pre><code>query &lt;type-string&gt; &lt;sort-mode&gt; &lt;label&gt;
+----	#如果不加则返回空集
+&lt;expected result&gt;
+1
+2
+3
+</code></pre>
+<h4 id="2、其中-lt-type-string-gt-返回数据类型，包含有TIR"><a href="#2、其中-lt-type-string-gt-返回数据类型，包含有TIR" class="headerlink" title="2、其中 &lt; type-string&gt;返回数据类型，包含有TIR"></a>2、其中 &lt; type-string&gt;返回数据类型，包含有TIR</h4><pre><code>T-文本
+I-整型
+R-浮点
+B-布尔
+O-行标识符
+</code></pre>
+<h4 id="3、-lt-sort-mode-gt-包含nosort，rowsort，valuesort"><a href="#3、-lt-sort-mode-gt-包含nosort，rowsort，valuesort" class="headerlink" title="3、&lt; sort-mode&gt;包含nosort，rowsort，valuesort"></a>3、&lt; sort-mode&gt;包含nosort，rowsort，valuesort</h4><pre><code>nosort-按数据库输出结果显示（默认）
+rowsort-输出后再进行排序，按照ASCII码排序
+valuesort-和rowsort一样，但是不是按行分组
+</code></pre>
+<h4 id="4、-lt-label-gt"><a href="#4、-lt-label-gt" class="headerlink" title="4、&lt; label&gt;"></a>4、&lt; label&gt;</h4><pre><code>如果添加的话，会保存查询结果备重用
+对于返回结果：
+整型-%d
+浮点-%.3f
+空值-NUL
+空字符串-empty
+控制字符或不可打印的-@
+控制记录
+测试过程中需要控制情况下用下列语句：
+halt
+hash-threshold &lt;max-result-set-size&gt;
+1
+2
+halt停止供调试使用，可以使数据库处于出bug状态
+</code></pre>
+<p>hash-threshold &lt; max-result-set-size&gt;对结果集中的值数量限制，如果超出了数量，则存储所有值得哈希值，而不是存储在脚本中</p>
+<h3 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h3><h4 id="1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句："><a href="#1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句：" class="headerlink" title="1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句："></a>1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句：</h4><pre><code>skipif &lt;database-name&gt;
+onlyif &lt;database-name&gt;
+</code></pre>
+]]></content>
+      <categories>
+        <category>cockroachDB</category>
+      </categories>
+      <tags>
+        <tag>test</tag>
       </tags>
   </entry>
   <entry>
@@ -270,51 +318,84 @@
       </tags>
   </entry>
   <entry>
-    <title>sqllogictest</title>
-    <url>/2023/02/06/sqllogictest/</url>
-    <content><![CDATA[<h3 id="在cockroachDB中设计的位置为pkg-x2F-sql-x2F-logictest-x2F-logic-go"><a href="#在cockroachDB中设计的位置为pkg-x2F-sql-x2F-logictest-x2F-logic-go" class="headerlink" title="在cockroachDB中设计的位置为pkg&#x2F;sql&#x2F;logictest&#x2F;logic.go"></a>在cockroachDB中设计的位置为pkg&#x2F;sql&#x2F;logictest&#x2F;logic.go</h3><p>更多用法也可以参照sqllogictest <a href="https://www.sqlite.org/sqllogictest/doc/trunk/about.wiki">官方文档</a><br>    1、注释：#<br>    2、不要求返回结果的语句（如建表，增删改）：<br>    3、每个语句后接一个SQL命令，预期成功ok，预期失败error<br>        statement ok	#注意末尾不要加  ‘;’<br>        statement error	</p>
-<h3 id="查询语句"><a href="#查询语句" class="headerlink" title="查询语句"></a>查询语句</h3><h4 id="1、预期返回结果并进行比较"><a href="#1、预期返回结果并进行比较" class="headerlink" title="1、预期返回结果并进行比较"></a>1、预期返回结果并进行比较</h4><pre><code>query &lt;type-string&gt; &lt;sort-mode&gt; &lt;label&gt;
-----	#如果不加则返回空集
-&lt;expected result&gt;
-1
-2
-3
-</code></pre>
-<h4 id="2、其中-lt-type-string-gt-返回数据类型，包含有TIR"><a href="#2、其中-lt-type-string-gt-返回数据类型，包含有TIR" class="headerlink" title="2、其中 &lt; type-string&gt;返回数据类型，包含有TIR"></a>2、其中 &lt; type-string&gt;返回数据类型，包含有TIR</h4><pre><code>T-文本
-I-整型
-R-浮点
-B-布尔
-O-行标识符
-</code></pre>
-<h4 id="3、-lt-sort-mode-gt-包含nosort，rowsort，valuesort"><a href="#3、-lt-sort-mode-gt-包含nosort，rowsort，valuesort" class="headerlink" title="3、&lt; sort-mode&gt;包含nosort，rowsort，valuesort"></a>3、&lt; sort-mode&gt;包含nosort，rowsort，valuesort</h4><pre><code>nosort-按数据库输出结果显示（默认）
-rowsort-输出后再进行排序，按照ASCII码排序
-valuesort-和rowsort一样，但是不是按行分组
-</code></pre>
-<h4 id="4、-lt-label-gt"><a href="#4、-lt-label-gt" class="headerlink" title="4、&lt; label&gt;"></a>4、&lt; label&gt;</h4><pre><code>如果添加的话，会保存查询结果备重用
-对于返回结果：
-整型-%d
-浮点-%.3f
-空值-NUL
-空字符串-empty
-控制字符或不可打印的-@
-控制记录
-测试过程中需要控制情况下用下列语句：
-halt
-hash-threshold &lt;max-result-set-size&gt;
-1
-2
-halt停止供调试使用，可以使数据库处于出bug状态
-</code></pre>
-<p>hash-threshold &lt; max-result-set-size&gt;对结果集中的值数量限制，如果超出了数量，则存储所有值得哈希值，而不是存储在脚本中</p>
-<h3 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h3><h4 id="1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句："><a href="#1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句：" class="headerlink" title="1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句："></a>1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句：</h4><pre><code>skipif &lt;database-name&gt;
-onlyif &lt;database-name&gt;
-</code></pre>
+    <title>安装postgres</title>
+    <url>/2022/02/08/%E5%AE%89%E8%A3%85postgres/</url>
+    <content><![CDATA[<h2 id="1、-下載源碼包，并解壓"><a href="#1、-下載源碼包，并解壓" class="headerlink" title="1、 下載源碼包，并解壓"></a>1、 下載源碼包，并解壓</h2><ul>
+<li>wget <a href="https://ftp.postgresql.org/pub/source/v14.2/postgresql-14.2.tar.bz2">https://ftp.postgresql.org/pub/source/v14.2/postgresql-14.2.tar.bz2</a></li>
+<li>tar -jxvf postgresql-14.2.tar.bz2</li>
+</ul>
+<h2 id="2、进入解压包編譯安裝"><a href="#2、进入解压包編譯安裝" class="headerlink" title="2、进入解压包編譯安裝"></a>2、进入解压包編譯安裝</h2><ul>
+<li><p>.&#x2F;configure –prefix&#x3D;&#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres –enable-debug –enable-cassert –enable-depend CFLAGS&#x3D;-O0</p>
+</li>
+<li><p>–prefix : 指定安装的目录</p>
+</li>
+<li><p>–enable-debug : 把所有程序和库以带有调试符号的方式编译</p>
+</li>
+<li><p>–enable-cassert : 打开服务器中的断言（assertion）检查，它会检查许多”不可能发生”的条件。</p>
+</li>
+<li><p>–enable-depend ： 打开自动依赖性跟踪。</p>
+</li>
+<li><p>CFLAGS&#x3D;-O0 ： 关闭优化</p>
+</li>
+<li><p>make &amp;&amp; make install</p>
+</li>
+</ul>
+<h2 id="3、进入安装目录，第一次需要初始化数据库（使用initdb）"><a href="#3、进入安装目录，第一次需要初始化数据库（使用initdb）" class="headerlink" title="3、进入安装目录，第一次需要初始化数据库（使用initdb）"></a>3、进入安装目录，第一次需要初始化数据库（使用initdb）</h2><ul>
+<li>cd &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres&#x2F;bin</li>
+<li>.&#x2F;initdb -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data</li>
+</ul>
+<h2 id="4、启动并且连接"><a href="#4、启动并且连接" class="headerlink" title="4、启动并且连接"></a>4、启动并且连接</h2><ul>
+<li>.&#x2F;pg_ctl -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data -l logfile start</li>
+<li>.&#x2F;psql -d postgres</li>
+</ul>
+<h2 id="5、服务器的启动、停止、再启动："><a href="#5、服务器的启动、停止、再启动：" class="headerlink" title="5、服务器的启动、停止、再启动："></a>5、服务器的启动、停止、再启动：</h2><ul>
+<li>启动：pg_ctl start -l logfile -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data</li>
+<li>停止：pg_ctl stop -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data</li>
+<li>重新启动：pg_ctl restart -l logfile -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data</li>
+</ul>
+<h2 id="6、使用数据库"><a href="#6、使用数据库" class="headerlink" title="6、使用数据库"></a>6、使用数据库</h2><ul>
+<li><p>建表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Student(</span><br><span class="line">name <span class="type">varchar</span>(<span class="number">20</span>),</span><br><span class="line">id <span class="type">int</span>,</span><br><span class="line">department <span class="type">varchar</span>(<span class="number">30</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
+<li><p>插入数据</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Student <span class="keyword">values</span></span><br><span class="line">(<span class="string">&#x27;xql&#x27;</span>,<span class="number">1</span>,<span class="string">&#x27;info&#x27;</span>),</span><br><span class="line">(<span class="string">&#x27;test&#x27;</span>,<span class="number">2</span>,<span class="string">&#x27;math&#x27;</span>),</span><br><span class="line">(<span class="string">&#x27;temp&#x27;</span>,<span class="number">3</span>, <span class="string">&#x27;ai&#x27;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> Student;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>例：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">[crdb<span class="variable">@localhost</span> bin]$ .<span class="operator">/</span>pg_ctl <span class="operator">-</span>D <span class="operator">/</span>home<span class="operator">/</span>crdb<span class="operator">/</span>postgresql<span class="operator">/</span>postgres_data <span class="operator">-</span>l logfile <span class="keyword">start</span></span><br><span class="line">waiting <span class="keyword">for</span> server <span class="keyword">to</span> start.... done</span><br><span class="line">server started</span><br><span class="line">[crdb<span class="variable">@localhost</span> bin]$ .<span class="operator">/</span>psql <span class="operator">-</span>d postgres</span><br><span class="line">psql (<span class="number">14.2</span>)</span><br><span class="line">Type &quot;help&quot; <span class="keyword">for</span> help.</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">create</span> <span class="keyword">table</span> Student(</span><br><span class="line">postgres(# name <span class="type">varchar</span>(<span class="number">20</span>),</span><br><span class="line">postgres(# id <span class="type">int</span>,</span><br><span class="line">postgres(# department <span class="type">varchar</span>(<span class="number">30</span>)</span><br><span class="line">postgres(# );</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">insert</span> <span class="keyword">into</span> Student <span class="keyword">values</span></span><br><span class="line">postgres<span class="operator">-</span># (<span class="string">&#x27;xql&#x27;</span>,<span class="number">1</span>,<span class="string">&#x27;info&#x27;</span>),</span><br><span class="line">postgres<span class="operator">-</span># (<span class="string">&#x27;test&#x27;</span>,<span class="number">2</span>,<span class="string">&#x27;math&#x27;</span>),</span><br><span class="line">postgres<span class="operator">-</span># (<span class="string">&#x27;temp&#x27;</span>,<span class="number">3</span>, <span class="string">&#x27;ai&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="number">0</span> <span class="number">3</span></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> Student;</span><br><span class="line"> name <span class="operator">|</span> id <span class="operator">|</span> department</span><br><span class="line"><span class="comment">------+----+------------</span></span><br><span class="line"> xql  <span class="operator">|</span>  <span class="number">1</span> <span class="operator">|</span> info</span><br><span class="line"> test <span class="operator">|</span>  <span class="number">2</span> <span class="operator">|</span> math</span><br><span class="line"> temp <span class="operator">|</span>  <span class="number">3</span> <span class="operator">|</span> ai</span><br><span class="line">(<span class="number">3</span> <span class="keyword">rows</span>)</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span>#</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="7、调试"><a href="#7、调试" class="headerlink" title="7、调试"></a>7、调试</h2><ul>
+<li>获取进程id号<br>select pg_backend_pid();</li>
+<li>gdb attach pid</li>
+<li>gdb) n</li>
+<li>gdb) c</li>
+<li>使用图形界面看  断点代码 ctrl + x + a （严格先后顺序）</li>
+</ul>
+<h2 id="8、gdb-常用命令"><a href="#8、gdb-常用命令" class="headerlink" title="8、gdb 常用命令"></a>8、gdb 常用命令</h2><ul>
+<li>命令        简写形式    说明</li>
+<li>list        l    查看源码</li>
+<li>backtrace    bt、where    打印函数栈信息</li>
+<li>next        n    执行下一行</li>
+<li>step        s    一次执行一行，遇到函数会进入</li>
+<li>finish         运行到函数结束</li>
+<li>continue    c    继续运行</li>
+<li>break        b    设置断点</li>
+<li>info breakpoints         显示断点信息</li>
+<li>delete       d    删除全部断点</li>
+<li>print        p    打印表达式的值</li>
+<li>run            r    启动程序</li>
+<li>until        u    执行到指定行</li>
+<li>info        i    显示信息</li>
+<li>help        h    帮助信息</li>
+</ul>
+<h2 id="9、找内置函数date-part时的断点设置"><a href="#9、找内置函数date-part时的断点设置" class="headerlink" title="9、找内置函数date_part时的断点设置"></a>9、找内置函数date_part时的断点设置</h2><p><a href="https://blog.csdn.net/qq_28351609/article/details/114855630">GDB调试命令详解</a></p>
 ]]></content>
       <categories>
-        <category>cockroachDB</category>
+        <category>pg</category>
       </categories>
       <tags>
-        <tag>test</tag>
+        <tag>环境配置</tag>
       </tags>
   </entry>
   <entry>
@@ -432,89 +513,8 @@ onlyif &lt;database-name&gt;
       </categories>
   </entry>
   <entry>
-    <title>安装postgres</title>
-    <url>/2023/02/08/%E5%AE%89%E8%A3%85postgres/</url>
-    <content><![CDATA[<h2 id="1、-下載源碼包，并解壓"><a href="#1、-下載源碼包，并解壓" class="headerlink" title="1、 下載源碼包，并解壓"></a>1、 下載源碼包，并解壓</h2><ul>
-<li>wget <a href="https://ftp.postgresql.org/pub/source/v14.2/postgresql-14.2.tar.bz2">https://ftp.postgresql.org/pub/source/v14.2/postgresql-14.2.tar.bz2</a></li>
-<li>tar -jxvf postgresql-14.2.tar.bz2</li>
-</ul>
-<h2 id="2、进入解压包編譯安裝"><a href="#2、进入解压包編譯安裝" class="headerlink" title="2、进入解压包編譯安裝"></a>2、进入解压包編譯安裝</h2><ul>
-<li><p>.&#x2F;configure –prefix&#x3D;&#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres –enable-debug –enable-cassert –enable-depend CFLAGS&#x3D;-O0</p>
-</li>
-<li><p>–prefix : 指定安装的目录</p>
-</li>
-<li><p>–enable-debug : 把所有程序和库以带有调试符号的方式编译</p>
-</li>
-<li><p>–enable-cassert : 打开服务器中的断言（assertion）检查，它会检查许多”不可能发生”的条件。</p>
-</li>
-<li><p>–enable-depend ： 打开自动依赖性跟踪。</p>
-</li>
-<li><p>CFLAGS&#x3D;-O0 ： 关闭优化</p>
-</li>
-<li><p>make &amp;&amp; make install</p>
-</li>
-</ul>
-<h2 id="3、进入安装目录，第一次需要初始化数据库（使用initdb）"><a href="#3、进入安装目录，第一次需要初始化数据库（使用initdb）" class="headerlink" title="3、进入安装目录，第一次需要初始化数据库（使用initdb）"></a>3、进入安装目录，第一次需要初始化数据库（使用initdb）</h2><ul>
-<li>cd &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres&#x2F;bin</li>
-<li>.&#x2F;initdb -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data</li>
-</ul>
-<h2 id="4、启动并且连接"><a href="#4、启动并且连接" class="headerlink" title="4、启动并且连接"></a>4、启动并且连接</h2><ul>
-<li>.&#x2F;pg_ctl -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data -l logfile start</li>
-<li>.&#x2F;psql -d postgres</li>
-</ul>
-<h2 id="5、服务器的启动、停止、再启动："><a href="#5、服务器的启动、停止、再启动：" class="headerlink" title="5、服务器的启动、停止、再启动："></a>5、服务器的启动、停止、再启动：</h2><ul>
-<li>启动：pg_ctl start -l logfile -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data</li>
-<li>停止：pg_ctl stop -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data</li>
-<li>重新启动：pg_ctl restart -l logfile -D &#x2F;home&#x2F;crdb&#x2F;postgresql&#x2F;postgres_data</li>
-</ul>
-<h2 id="6、使用数据库"><a href="#6、使用数据库" class="headerlink" title="6、使用数据库"></a>6、使用数据库</h2><ul>
-<li><p>建表</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Student(</span><br><span class="line">name <span class="type">varchar</span>(<span class="number">20</span>),</span><br><span class="line">id <span class="type">int</span>,</span><br><span class="line">department <span class="type">varchar</span>(<span class="number">30</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
-<li><p>插入数据</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Student <span class="keyword">values</span></span><br><span class="line">(<span class="string">&#x27;xql&#x27;</span>,<span class="number">1</span>,<span class="string">&#x27;info&#x27;</span>),</span><br><span class="line">(<span class="string">&#x27;test&#x27;</span>,<span class="number">2</span>,<span class="string">&#x27;math&#x27;</span>),</span><br><span class="line">(<span class="string">&#x27;temp&#x27;</span>,<span class="number">3</span>, <span class="string">&#x27;ai&#x27;</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查询数据</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> Student;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>例：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">[crdb<span class="variable">@localhost</span> bin]$ .<span class="operator">/</span>pg_ctl <span class="operator">-</span>D <span class="operator">/</span>home<span class="operator">/</span>crdb<span class="operator">/</span>postgresql<span class="operator">/</span>postgres_data <span class="operator">-</span>l logfile <span class="keyword">start</span></span><br><span class="line">waiting <span class="keyword">for</span> server <span class="keyword">to</span> start.... done</span><br><span class="line">server started</span><br><span class="line">[crdb<span class="variable">@localhost</span> bin]$ .<span class="operator">/</span>psql <span class="operator">-</span>d postgres</span><br><span class="line">psql (<span class="number">14.2</span>)</span><br><span class="line">Type &quot;help&quot; <span class="keyword">for</span> help.</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">create</span> <span class="keyword">table</span> Student(</span><br><span class="line">postgres(# name <span class="type">varchar</span>(<span class="number">20</span>),</span><br><span class="line">postgres(# id <span class="type">int</span>,</span><br><span class="line">postgres(# department <span class="type">varchar</span>(<span class="number">30</span>)</span><br><span class="line">postgres(# );</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">insert</span> <span class="keyword">into</span> Student <span class="keyword">values</span></span><br><span class="line">postgres<span class="operator">-</span># (<span class="string">&#x27;xql&#x27;</span>,<span class="number">1</span>,<span class="string">&#x27;info&#x27;</span>),</span><br><span class="line">postgres<span class="operator">-</span># (<span class="string">&#x27;test&#x27;</span>,<span class="number">2</span>,<span class="string">&#x27;math&#x27;</span>),</span><br><span class="line">postgres<span class="operator">-</span># (<span class="string">&#x27;temp&#x27;</span>,<span class="number">3</span>, <span class="string">&#x27;ai&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="number">0</span> <span class="number">3</span></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> Student;</span><br><span class="line"> name <span class="operator">|</span> id <span class="operator">|</span> department</span><br><span class="line"><span class="comment">------+----+------------</span></span><br><span class="line"> xql  <span class="operator">|</span>  <span class="number">1</span> <span class="operator">|</span> info</span><br><span class="line"> test <span class="operator">|</span>  <span class="number">2</span> <span class="operator">|</span> math</span><br><span class="line"> temp <span class="operator">|</span>  <span class="number">3</span> <span class="operator">|</span> ai</span><br><span class="line">(<span class="number">3</span> <span class="keyword">rows</span>)</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span>#</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="7、调试"><a href="#7、调试" class="headerlink" title="7、调试"></a>7、调试</h2><ul>
-<li>获取进程id号<br>select pg_backend_pid();</li>
-<li>gdb attach pid</li>
-<li>gdb) n</li>
-<li>gdb) c</li>
-<li>使用图形界面看  断点代码 ctrl + x + a （严格先后顺序）</li>
-</ul>
-<h2 id="8、gdb-常用命令"><a href="#8、gdb-常用命令" class="headerlink" title="8、gdb 常用命令"></a>8、gdb 常用命令</h2><ul>
-<li>命令        简写形式    说明</li>
-<li>list        l    查看源码</li>
-<li>backtrace    bt、where    打印函数栈信息</li>
-<li>next        n    执行下一行</li>
-<li>step        s    一次执行一行，遇到函数会进入</li>
-<li>finish         运行到函数结束</li>
-<li>continue    c    继续运行</li>
-<li>break        b    设置断点</li>
-<li>info breakpoints         显示断点信息</li>
-<li>delete       d    删除全部断点</li>
-<li>print        p    打印表达式的值</li>
-<li>run            r    启动程序</li>
-<li>until        u    执行到指定行</li>
-<li>info        i    显示信息</li>
-<li>help        h    帮助信息</li>
-</ul>
-<h2 id="9、找内置函数date-part时的断点设置"><a href="#9、找内置函数date-part时的断点设置" class="headerlink" title="9、找内置函数date_part时的断点设置"></a>9、找内置函数date_part时的断点设置</h2><p><a href="https://blog.csdn.net/qq_28351609/article/details/114855630">GDB调试命令详解</a></p>
-]]></content>
-      <categories>
-        <category>pg</category>
-      </categories>
-      <tags>
-        <tag>环境配置</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>normalize代码解读</title>
-    <url>/2023/02/09/normalize%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB/</url>
+    <url>/2022/01/09/normalize%E4%BB%A3%E7%A0%81%E8%A7%A3%E8%AF%BB/</url>
     <content><![CDATA[<h3 id="normalize-代码解读"><a href="#normalize-代码解读" class="headerlink" title="normalize 代码解读"></a>normalize 代码解读</h3><h4 id="代码目录"><a href="#代码目录" class="headerlink" title="代码目录"></a>代码目录</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@tc128 optgen]# pwd</span><br><span class="line">pkg/sql/opt/optgen</span><br><span class="line">[root@tc128 optgen]# ll *</span><br><span class="line">drwxr-xr-x 5 root root  49 May 11 17:35 cmd</span><br><span class="line">drwxr-xr-x 3 root root 146 May 11 17:35 exprgen</span><br><span class="line">drwxr-xr-x 4 root root 333 May 11 20:40 lang</span><br><span class="line"></span><br><span class="line">cmd:</span><br><span class="line">drwxr-xr-x 2 root root   78 May 11 17:35 langgen</span><br><span class="line">drwxr-xr-x 3 root root   76 May 11 17:35 optfmt</span><br><span class="line">drwxr-xr-x 3 root root 4096 May 11 17:35 optgen</span><br><span class="line"></span><br><span class="line">langgen:</span><br><span class="line">-rw-r--r-- 1 root root  1621 May 11 17:35 BUILD.bazel</span><br><span class="line">-rw-r--r-- 1 root root 11432 May 11 17:35 exprs_gen.go</span><br><span class="line">-rw-r--r-- 1 root root  3404 May 11 17:35 main.go                  ---generate langgen binary</span><br><span class="line">-rw-r--r-- 1 root root   864 May 11 17:35 ops_gen.go</span><br><span class="line"></span><br><span class="line">optfmt:</span><br><span class="line">-rw-r--r-- 1 root root   724 May 11 17:35 BUILD.bazel</span><br><span class="line">-rw-r--r-- 1 root root 11208 May 11 17:35 main.go                  ---generate optfmt binary</span><br><span class="line">-rw-r--r-- 1 root root  1886 May 11 17:35 main_test.go</span><br><span class="line">drwxr-xr-x 2 root root    96 May 11 19:50 testdata</span><br><span class="line"></span><br><span class="line">optgen:</span><br><span class="line">-rw-r--r-- 1 root root  1108 May 11 17:35 BUILD.bazel</span><br><span class="line">-rw-r--r-- 1 root root  4430 May 11 17:35 exec_explain_gen.go</span><br><span class="line">-rw-r--r-- 1 root root  4727 May 11 17:35 exec_factory_gen.go</span><br><span class="line">-rw-r--r-- 1 root root  3829 May 11 17:35 explorer_gen.go</span><br><span class="line">-rw-r--r-- 1 root root 30222 May 11 17:35 exprs_gen.go</span><br><span class="line">-rw-r--r-- 1 root root 18310 May 11 17:35 factory_gen.go</span><br><span class="line">-rw-r--r-- 1 root root  6988 May 11 17:35 main.go                  ---generate optgen binary</span><br><span class="line">-rw-r--r-- 1 root root  2084 May 11 17:35 main_test.go</span><br><span class="line">-rw-r--r-- 1 root root  2462 May 11 17:35 match_writer.go     #write interface,支持写，缩进写，反缩进写</span><br><span class="line">-rw-r--r-- 1 root root 19825 May 11 17:35 metadata.go         #map: scalar-&gt;opt.scalar 将变量等转换成go可支持变变量</span><br><span class="line">-rw-r--r-- 1 root root  4339 May 11 17:35 ops_gen.go</span><br><span class="line">-rw-r--r-- 1 root root 37163 May 11 17:35 rule_gen.go</span><br><span class="line">-rw-r--r-- 1 root root  2019 May 11 17:35 rule_names_gen.go</span><br><span class="line">drwxr-xr-x 2 root root   160 May 11 17:35 testdata</span><br><span class="line">-rw-r--r-- 1 root root  1025 May 11 17:35 uniquifier.go       #unique</span><br><span class="line">-rw-r--r-- 1 root root  2704 May 11 17:35 utils.go            #expandFields,#-&gt;//,input-&gt;Input</span><br><span class="line">-rw-r--r-- 1 root root  3613 May 11 17:35 validator.go        #check tag and field</span><br><span class="line"></span><br><span class="line">exprgen:</span><br><span class="line">-rw-r--r-- 1 root root  1103 May 11 17:35 BUILD.bazel</span><br><span class="line">-rw-r--r-- 1 root root  7257 May 11 17:35 custom_funcs.go</span><br><span class="line">-rw-r--r-- 1 root root 10963 May 11 17:35 expr_gen.go</span><br><span class="line">-rw-r--r-- 1 root root   891 May 11 17:35 expr_gen_test.go</span><br><span class="line">-rw-r--r-- 1 root root  1763 May 11 17:35 parse_type.go</span><br><span class="line">-rw-r--r-- 1 root root  6183 May 11 17:35 private.go</span><br><span class="line">drwxr-xr-x 2 root root   124 May 11 17:35 testdata</span><br><span class="line">exprgen 说明：</span><br><span class="line">    root@192.168.86.128:26257/test3&gt; prepare s2 as opt plan &#x27;select * from tc where a=1&#x27;;</span><br><span class="line">    ERROR: PREPARE AS OPT PLAN is a testing facility that should not be used directly</span><br><span class="line">测试使用，正常使用不支持。</span><br><span class="line"></span><br><span class="line">lang:</span><br><span class="line">-rw-r--r-- 1 root root  2367 May 11 17:35 BUILD.bazel            ---compile,parser,scanner</span><br><span class="line">-rw-r--r-- 1 root root 22741 May 11 17:35 compiler.go</span><br><span class="line">-rw-r--r-- 1 root root  3046 May 11 17:35 compiler_test.go</span><br><span class="line">-rw-r--r-- 1 root root  5534 May 11 17:35 data_type.go</span><br><span class="line">-rw-r--r-- 1 root root 19474 May 11 17:35 doc.go</span><br><span class="line">-rw-r--r-- 1 root root 10431 May 11 17:35 expr.go</span><br><span class="line">-rw-r--r-- 1 root root 26562 May 11 17:35 expr.og.go</span><br><span class="line">-rw-r--r-- 1 root root  3306 May 11 17:35 lang.opt              ---提供基础结构，由langgen生成对应og.go文件</span><br><span class="line">-rw-r--r-- 1 root root   375 May 11 17:35 operator.og.go</span><br><span class="line">-rw-r--r-- 1 root root  1459 May 11 17:35 operator_string.go    ---将枚举中数值输出转string输出，由go stringer生成</span><br><span class="line">-rw-r--r-- 1 root root 19509 May 11 17:35 parser.go</span><br><span class="line">-rw-r--r-- 1 root root  1292 May 11 17:35 parser_test.go</span><br><span class="line">-rw-r--r-- 1 root root  9607 May 11 17:35 scanner.go</span><br><span class="line">-rw-r--r-- 1 root root  2141 May 11 17:35 scanner_test.go</span><br><span class="line">drwxr-xr-x 5 root root    47 May 11 17:35 support</span><br><span class="line">drwxr-xr-x 2 root root    51 May 11 17:35 testdata</span><br><span class="line">-rw-r--r-- 1 root root  1245 May 11 17:35 token_string.go</span><br></pre></td></tr></table></figure>
 
 <h4 id="编译生成"><a href="#编译生成" class="headerlink" title="编译生成"></a>编译生成</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">optgen</span><br><span class="line">[root@tc128 cockroach]# make</span><br><span class="line">GOPATH set to /esgyndb/cockroach-master</span><br><span class="line">mkdir -p lib</span><br><span class="line">rm -f lib/lib&#123;geos,geos_c&#125;.so</span><br><span class="line">cp -L /esgyndb/cockroach-master/native/x86_64-redhat-linux/geos/lib/lib&#123;geos,geos_c&#125;.so lib</span><br><span class="line">go install -v optgen</span><br><span class="line">GOFLAGS= bin/prereqs ./pkg/sql/opt/optgen/cmd/optgen &gt; bin/optgen.d.tmp</span><br><span class="line">./build/bazelutil/generate_redact_safe.sh &gt;docs/generated/redact_safe.md.tmp || &#123; rm -f docs/generated/redact_safe.md.tmp; exit 1; &#125;</span><br><span class="line">mv -f bin/optgen.d.tmp bin/optgen.d</span><br><span class="line">GOBIN=&#x27;/esgyndb/cockroach-master/src/github.com/cockroachdb/cockroach/bin&#x27; </span><br><span class="line">GOFLAGS= go install -ldflags &#x27;-X github.com/cockroachdb/cockroach/pkg/build.typ=development -extldflags &quot;&quot; -X &quot;github.com/cockroachdb/cockroach/pkg/build.tag=v9.0.0-rc.6.xTP-1-gf7ea2a4ea9-dirty&quot; -X &quot;github.com/cockroachdb/cockroach/pkg/build.rev=f7ea2a4ea9a5253d2872563cd3b8d972c3a166a6&quot; -X &quot;github.com/cockroachdb/cockroach/pkg/build.cgoTargetTriple=x86_64-redhat-linux&quot; -X &quot;github.com/cockroachdb/cockroach/pkg/build.utcTime=2022/05/12 00:34:01&quot;   -X &quot;github.com/cockroachdb/cockroach/pkg/build.utcTime=2022/05/12 00:34:01&quot;&#x27; -v ./pkg/sql/opt/optgen/cmd/optgen</span><br><span class="line">optgen -out pkg/sql/opt/memo/expr.og.go exprs pkg/sql/opt/ops/*.opt</span><br><span class="line">optgen -out pkg/sql/opt/operator.og.go ops pkg/sql/opt/ops/*.opt</span><br><span class="line">optgen -out pkg/sql/opt/xform/explorer.og.go explorer pkg/sql/opt/ops/*.opt pkg/sql/opt/xform/rules/*.opt</span><br><span class="line">optgen -out pkg/sql/opt/norm/factory.og.go factory pkg/sql/opt/ops/*.opt pkg/sql/opt/norm/rules/*.opt</span><br><span class="line">optgen -out pkg/sql/opt/rule_name.og.go rulenames pkg/sql/opt/ops/*.opt pkg/sql/opt/norm/rules/*.opt pkg/sql/opt/xform/rules/*.opt</span><br><span class="line">optgen -out pkg/sql/opt/exec/factory.og.go execfactory pkg/sql/opt/exec/factory.opt</span><br><span class="line">optgen -out pkg/sql/opt/exec/explain/explain_factory.og.go execexplain pkg/sql/opt/exec/factory.opt</span><br><span class="line">stringer -output=pkg/sql/opt/rule_name_string.go -type=RuleName pkg/sql/opt/rule_name.go pkg/sql/opt/rule_name.og.go</span><br></pre></td></tr></table></figure>
@@ -583,7 +583,7 @@ onlyif &lt;database-name&gt;
   </entry>
   <entry>
     <title>opt官方文档解读</title>
-    <url>/2023/02/09/opt%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E8%A7%A3%E8%AF%BB/</url>
+    <url>/2023/01/01/opt%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E8%A7%A3%E8%AF%BB/</url>
     <content><![CDATA[<h2 id="地址指路"><a href="#地址指路" class="headerlink" title="地址指路"></a>地址指路</h2><p><a href="https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/">https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/</a></p>
 <h2 id="主要文章内容"><a href="#主要文章内容" class="headerlink" title="主要文章内容"></a>主要文章内容</h2><h3 id="What-is-a-SQL-optimizer-anyway"><a href="#What-is-a-SQL-optimizer-anyway" class="headerlink" title="What is a SQL optimizer anyway?"></a>What is a SQL optimizer anyway?</h3><p>A SQL optimizer analyzes a SQL query and chooses the most efficient way to execute it.<br>While the simplest queries might have only one way to execute, more complex queries can<br>have thousands, or even millions, of ways. The better the optimizer, the closer it gets<br>to choosing the optimal execution plan, which is the most efficient way to execute a query.<br>一个SQL优化器分析一个SQL查询，并选择最有效的方式来执行它。虽然最简单的查询可能只有一种执行方式，<br>但更复杂的查询可能有数千甚至数百万种方式。优化器越好，它就越接近于选择最佳执行计划，也就是执行查询的最有效方式。</p>
 <blockquote>
