@@ -19,29 +19,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito2333.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="以 concat 为例， 研究 aggregate function">
+    <meta name="description" content="3 Basic Rules for Choosing Indexes">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Aggregate Function">
-<meta property="og:url" content="https://mosquito2333.github.io/2023/02/06/Aggregate-Function/index.html">
+<meta property="og:title" content="how-to-choose-db-index-keys">
+<meta property="og:url" content="https://mosquito2333.github.io/2023/02/09/how-to-choose-db-index-keys/index.html">
 <meta property="og:site_name" content="一个小仙女的博客">
-<meta property="og:description" content="以 concat 为例， 研究 aggregate function">
+<meta property="og:description" content="3 Basic Rules for Choosing Indexes">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-02-06T06:39:19.000Z">
-<meta property="article:modified_time" content="2023-02-07T08:41:30.162Z">
+<meta property="article:published_time" content="2023-02-09T01:34:05.000Z">
+<meta property="article:modified_time" content="2023-02-09T01:36:47.233Z">
 <meta property="article:author" content="mosquito2333">
-<meta property="article:tag" content="crdb">
-<meta property="article:tag" content="function">
+<meta property="article:tag" content="优化器">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://mosquito2333.github.io/2023/02/06/Aggregate-Function/">
+<link rel="canonical" href="https://mosquito2333.github.io/2023/02/09/how-to-choose-db-index-keys/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mosquito2333.github.io/2023/02/06/Aggregate-Function/","path":"2023/02/06/Aggregate-Function/","title":"Aggregate Function"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mosquito2333.github.io/2023/02/09/how-to-choose-db-index-keys/","path":"2023/02/09/how-to-choose-db-index-keys/","title":"how-to-choose-db-index-keys"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Aggregate Function | 一个小仙女的博客</title>
+<title>how-to-choose-db-index-keys | 一个小仙女的博客</title>
   
 
 
@@ -141,7 +140,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A5%E5%8F%A3%E5%87%BD%E6%95%B0-in-pkg-x2F-sql-x2F-sem-x2F-builtins-x2F-aggregate-builtins-go"><span class="nav-number">1.</span> <span class="nav-text">入口函数 in pkg&#x2F;sql&#x2F;sem&#x2F;builtins&#x2F;aggregate_builtins.go</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#crdb%E5%AE%98%E6%96%B9blog"><span class="nav-number">1.</span> <span class="nav-text">crdb官方blog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Basic-Rules-for-Choosing-Indexes"><span class="nav-number">2.</span> <span class="nav-text">3 Basic Rules for Choosing Indexes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Usefulness"><span class="nav-number">2.1.</span> <span class="nav-text">Usefulness</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Clustering"><span class="nav-number">2.2.</span> <span class="nav-text">Clustering</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -211,7 +210,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://mosquito2333.github.io/2023/02/06/Aggregate-Function/">
+    <link itemprop="mainEntityOfPage" href="https://mosquito2333.github.io/2023/02/09/how-to-choose-db-index-keys/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
@@ -224,12 +223,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Aggregate Function | 一个小仙女的博客">
-      <meta itemprop="description" content="以 concat 为例， 研究 aggregate function">
+      <meta itemprop="name" content="how-to-choose-db-index-keys | 一个小仙女的博客">
+      <meta itemprop="description" content="3 Basic Rules for Choosing Indexes">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Aggregate Function
+          how-to-choose-db-index-keys
         </h1>
 
         <div class="post-meta-container">
@@ -239,15 +238,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2023-02-06 14:39:19" itemprop="dateCreated datePublished" datetime="2023-02-06T14:39:19+08:00">2023-02-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-07 16:41:30" itemprop="dateModified" datetime="2023-02-07T16:41:30+08:00">2023-02-07</time>
+      <time title="创建时间：2023-02-09 09:34:05 / 修改时间：09:36:47" itemprop="dateCreated datePublished" datetime="2023-02-09T09:34:05+08:00">2023-02-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -262,7 +255,7 @@
   
 </div>
 
-            <div class="post-description">以 concat 为例， 研究 aggregate function</div>
+            <div class="post-description">3 Basic Rules for Choosing Indexes</div>
         </div>
       </header>
 
@@ -270,8 +263,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="入口函数-in-pkg-x2F-sql-x2F-sem-x2F-builtins-x2F-aggregate-builtins-go"><a href="#入口函数-in-pkg-x2F-sql-x2F-sem-x2F-builtins-x2F-aggregate-builtins-go" class="headerlink" title="入口函数 in pkg&#x2F;sql&#x2F;sem&#x2F;builtins&#x2F;aggregate_builtins.go"></a>入口函数 in pkg&#x2F;sql&#x2F;sem&#x2F;builtins&#x2F;aggregate_builtins.go</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> builtins</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">initAggregateBuiltins</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// Add all aggregates to the builtins map after a few sanity checks.</span></span><br><span class="line">    <span class="keyword">for</span> k, v := <span class="keyword">range</span> aggregates &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> v.props.Class != tree.AggregateClass &#123;</span><br><span class="line">            <span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;%s: aggregate functions should be marked with the tree.AggregateClass &quot;</span>+</span><br><span class="line"><span class="string">&quot;function class, found %v&quot;</span>, k, v))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> _, a := <span class="keyword">range</span> v.overloads &#123;</span><br><span class="line">            <span class="keyword">if</span> a.AggregateFunc == <span class="literal">nil</span> &#123;</span><br><span class="line">                <span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;%s: aggregate functions should have eval.AggregateFunc constructors, &quot;</span>+</span><br><span class="line"><span class="string">&quot;found %v&quot;</span>, k, a))</span><br><span class="line">                &#125;</span><br><span class="line">            <span class="keyword">if</span> a.WindowFunc == <span class="literal">nil</span> &#123;</span><br><span class="line">                <span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;%s: aggregate functions should have tree.WindowFunc constructors, &quot;</span>+</span><br><span class="line"><span class="string">&quot;found %v&quot;</span>, k, a))</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        registerBuiltin(k, v)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// aggregates are a special class of builtin functions that are wrapped</span></span><br><span class="line"><span class="comment">// at execution in a bucketing layer to combine (aggregate) the result</span></span><br><span class="line"><span class="comment">// of the function being run over many rows.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// See `aggregateFuncHolder` in the sql package.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// In particular they must not be simplified during normalization</span></span><br><span class="line"><span class="comment">// (and thus must be marked as impure), even when they are given a</span></span><br><span class="line"><span class="comment">// constant argument (e.g. SUM(1)). This is because aggregate</span></span><br><span class="line"><span class="comment">// functions must return NULL when they are no rows in the source</span></span><br><span class="line"><span class="comment">// table, so their evaluation must always be delayed until query</span></span><br><span class="line"><span class="comment">// execution.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Some aggregate functions must be called with NULL inputs, so normalizing</span></span><br><span class="line"><span class="comment">// an aggregate function call to NULL in the presence of a NULL argument may</span></span><br><span class="line"><span class="comment">// not be correct. There are two cases where an aggregate function must handle</span></span><br><span class="line"><span class="comment">// be called with null inputs:</span></span><br><span class="line"><span class="comment">// 1) the aggregate function does not skip NULLs (e.g., ARRAY_AGG); and</span></span><br><span class="line"><span class="comment">// 2) the aggregate function does not return NULL when it aggregates no rows</span></span><br><span class="line"><span class="comment">//		(e.g., COUNT).</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// For use in other packages, see AllAggregateBuiltinNames and</span></span><br><span class="line"><span class="comment">// GetBuiltinProperties().</span></span><br><span class="line"><span class="comment">// These functions are also identified with Class == tree.AggregateClass.</span></span><br><span class="line"><span class="comment">// The properties are reachable via tree.FunctionDefinition.</span></span><br><span class="line"><span class="keyword">var</span> aggregates = <span class="keyword">map</span>[<span class="type">string</span>]builtinDefinition&#123;</span><br><span class="line">	......</span><br><span class="line">	<span class="string">&quot;list_agg&quot;</span>: makeBuiltin(aggProps(),</span><br><span class="line">		makeAggOverload([]*types.T&#123;types.Any, types.Any&#125;, types.String, newListAggAggregate,</span><br><span class="line">			<span class="string">&quot;Concatenates all selected values using the provided delimiter.&quot;</span>, volatility.Immutable, <span class="literal">true</span> <span class="comment">/* calledOnNullInput */</span>),</span><br><span class="line">	),</span><br><span class="line">	......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+        <h3 id="crdb官方blog"><a href="#crdb官方blog" class="headerlink" title="crdb官方blog"></a><a target="_blank" rel="noopener" href="https://www.cockroachlabs.com/blog/how-to-choose-db-index-keys/">crdb官方blog</a></h3><h3 id="3-Basic-Rules-for-Choosing-Indexes"><a href="#3-Basic-Rules-for-Choosing-Indexes" class="headerlink" title="3 Basic Rules for Choosing Indexes"></a>3 Basic Rules for Choosing Indexes</h3><p>There are a few basic rules to keep in mind when choosing indexes for a database. A good index should have these three properties:</p>
+<p>Usefulness: Speed up the execution of some queries (or enforce a constraint)<br>Clustering: Keep records that are likely to be accessed together near each other<br>Scattering: Keep records that are unlikely to be accessed together far apart</p>
+<h4 id="Usefulness"><a href="#Usefulness" class="headerlink" title="Usefulness"></a>Usefulness</h4><p>The first rule is simply a reminder that indexes aren’t free, and if it’s not helping the application somehow you’re better off without it.<br>Each additional index makes all writes to the table slower, but they can make some reads much faster.<br>The best case for write performance is a table with a primary key but no secondary indexes.<br>The first secondary index has a high cost because it means any insert to the table becomes a distributed transaction, but the cost of each additional secondary index is smaller.<br>Do not let this scare you away from secondary indexes, however. They’re not free, but they have such a transformative impact on read performance that it’s nearly always worthwhile to ensure that every query you run has a suitable index.<br>Note that in CockroachDB it’s never helpful to remove the primary key. The database will create a hidden primary key for any table that doesn’t have one, and this hidden key cannot be used by any queries, so it’s always better to have a real primary key that you choose.<br>慎用索引，索引的目的是读的快，但是会导致写的慢。<br>最好的写性能的例子是一个有主键但是没有二级索引的表。<br>第一个二级索引的代价是很高的，因为它意味着任何对表的插入操作会变成一个分布式事务。但是每一个补充二级索引的代价是很小的。</p>
+<h4 id="Clustering"><a href="#Clustering" class="headerlink" title="Clustering"></a>Clustering</h4><p>The second rule, clustering, is a little more subtle. When an application needs to load multiple records at once ( for example, due to a JOIN or the use of the IN operator), it’s best for performance if those records are near each other.<br>Originally, this advice came about to minimize the number of seeks that must be performed on spinning HDDs. In a distributed database like CockroachDB, the same guideline serves to minimize the number of network operations to access data remotely. For instance, in a social network news feed, most page views only need data from the current day. Organizing the data by time may provide the best data clustering and cache efficiency (or maybe not, as we’ll see below).<br>CockroachDB offers a few SQL extensions that can further improve data clustering, including storing indexes.</p>
+<p>Scattering<br>The third rule, scattering, is in some sense the converse of the second: when similar records are near each other, different records naturally have to go somewhere else.<br>However, it’s not always the case that improving clustering also increases scattering. In the social network news feed example, organizing records by time maximizes clustering, but it also creates a hotspot because all the posts happening right now are trying to write to the same place. This is a severe limitation on the application’s ability to scale – if a hotspot like this exists, it’s not necessarily possible to serve more users by adding more nodes to a CockroachDB cluster. In practice, clustering and scattering are more often in tension with each other than they are mutually reinforcing.<br>Options for Selecting Unique IDs<br>If a table doesn’t have a natural primary key, you’ll probably want to synthesize some sort of unique identifier for each record. For this, you have a few options:</p>
 
     </div>
 
@@ -289,7 +285,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://mosquito2333.github.io/2023/02/06/Aggregate-Function/" title="Aggregate Function">https://mosquito2333.github.io/2023/02/06/Aggregate-Function/</a>
+      <a href="https://mosquito2333.github.io/2023/02/09/how-to-choose-db-index-keys/" title="how-to-choose-db-index-keys">https://mosquito2333.github.io/2023/02/09/how-to-choose-db-index-keys/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -298,21 +294,20 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/crdb/" rel="tag"># crdb</a>
-              <a href="/tags/function/" rel="tag"># function</a>
+              <a href="/tags/%E4%BC%98%E5%8C%96%E5%99%A8/" rel="tag"># 优化器</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/02/01/Test-Oracle-Random/" rel="prev" title="Test Oracle Random">
-                  <i class="fa fa-chevron-left"></i> Test Oracle Random
+                <a href="/2023/02/09/opt%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E8%A7%A3%E8%AF%BB/" rel="prev" title="opt官方文档解读">
+                  <i class="fa fa-chevron-left"></i> opt官方文档解读
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/02/06/sqllogictest/" rel="next" title="sqllogictest">
-                  sqllogictest <i class="fa fa-chevron-right"></i>
+                <a href="/2023/02/09/yacc%E4%BB%A5%E5%8F%8Acrdb%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/" rel="next" title="yacc以及crdb中的应用">
+                  yacc以及crdb中的应用 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -377,7 +372,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"mosquito2333","repo":"mosquito2333_comments","client_id":"3efd199fcf375c5193c0","client_secret":"36622e02f9d0533f53f341c10b3b9563e9c9fe03","admin_user":"mosquito2333","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"fbdf20110f46054c6bd4d2ef541b6b55"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"mosquito2333","repo":"mosquito2333_comments","client_id":"3efd199fcf375c5193c0","client_secret":"36622e02f9d0533f53f341c10b3b9563e9c9fe03","admin_user":"mosquito2333","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"4a74ebfb090a458d2869826de4f8df74"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
