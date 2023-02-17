@@ -30,10 +30,10 @@
 <meta property="og:image" content="https://mosquito2333.github.io/img/images_yacc/buildCompiler.png">
 <meta property="og:image" content="https://mosquito2333.github.io/img/images_yacc/rule.jpg">
 <meta property="og:image" content="https://mosquito2333.github.io/img/images_yacc/parse.png">
-<meta property="article:published_time" content="2021-02-07T01:40:41.000Z">
-<meta property="article:modified_time" content="2023-02-15T01:18:12.512Z">
+<meta property="article:published_time" content="2021-02-07T11:40:41.000Z">
+<meta property="article:modified_time" content="2023-02-17T07:38:27.519Z">
 <meta property="article:author" content="mosquito2333">
-<meta property="article:tag" content="解析器">
+<meta property="article:tag" content="cockroachDB">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://mosquito2333.github.io/img/images_yacc/generateProgress.png">
 
@@ -166,12 +166,12 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -206,14 +206,6 @@
 
     <div class="main-inner post posts-expand">
 
-	<div class="post-block animated fadeIn">
-		<h5 class="post-title" itemprop="name headline">
-			<a target="_blank" rel="noopener" href="https://github.com/mosquito2333" class="post-title-link" itemprop="url">Github Contribution Calendar</a>
-		</h5>
-		<div class="post-body animated fadeInDown" itemprop="articleBody">
-			<img style="width: 100%; margin-top: 30px;" src="https://ghchart.rshah.org/e77c8e/mosquito2333" alt="mosquito2333's Blue Github Chart" />
-		</div>
-	</div>
       
 
   
@@ -253,14 +245,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-02-07 09:40:41" itemprop="dateCreated datePublished" datetime="2021-02-07T09:40:41+08:00">2021-02-07</time>
+      <time title="创建时间：2021-02-07 19:40:41" itemprop="dateCreated datePublished" datetime="2021-02-07T19:40:41+08:00">2021-02-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-02-15 09:18:12" itemprop="dateModified" datetime="2023-02-15T09:18:12+08:00">2023-02-15</time>
+      <time title="修改时间：2023-02-17 15:38:27" itemprop="dateModified" datetime="2023-02-17T15:38:27+08:00">2023-02-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -268,7 +260,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/cockroachDB/" itemprop="url" rel="index"><span itemprop="name">cockroachDB</span></a>
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
         </span>
     </span>
 
@@ -295,9 +287,9 @@
 <li>lex 根据 example.l 和 y.tab.h 生成 yylex </li>
 <li>compile 生成解释器<br><img src="/img/images_yacc/buildCompiler.png"></li>
 </ul>
-<h2 id="三、yacc文件格式"><a href="#三、yacc文件格式" class="headerlink" title="三、yacc文件格式"></a>三、yacc文件格式</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">第一部分：定义段</span><br><span class="line">%&#125;</span><br><span class="line">%%</span><br><span class="line"> 第二部分：规则段</span><br><span class="line">%%</span><br><span class="line"> 第三部分：辅助函数</span><br><span class="line"> 在yacc中辅助函数可以放到第一部分内</span><br></pre></td></tr></table></figure>
+<h2 id="三、yacc文件格式"><a href="#三、yacc文件格式" class="headerlink" title="三、yacc文件格式"></a>三、yacc文件格式</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">%&#123;</span><br><span class="line">// 第一部分：定义段</span><br><span class="line">%&#125;</span><br><span class="line">%%</span><br><span class="line">// 第二部分：规则段</span><br><span class="line">%%</span><br><span class="line">// 第三部分：辅助函数</span><br><span class="line">// 在yacc中辅助函数可以放到第一部分内</span><br></pre></td></tr></table></figure>
 
-<h3 id="定义段"><a href="#定义段" class="headerlink" title="定义段"></a>定义段</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">第一部分主要包含的一些定义和声明：文件包含，宏定义，数据类型定义，全局变量定义，函数声明等。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="定义段"><a href="#定义段" class="headerlink" title="定义段"></a>定义段</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 第一部分主要包含的一些定义和声明：文件包含，宏定义，数据类型定义，全局变量定义，函数声明等。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h3 id="规则段（规则-操作）"><a href="#规则段（规则-操作）" class="headerlink" title="规则段（规则+操作）"></a>规则段（规则+操作）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">第二部分主要是对文法的终结符和非终结符做一些相关声明。</span><br><span class="line">(1) 声明主要有：%token，%left，%right，%nonassoc，%union，%type，%start</span><br><span class="line"></span><br><span class="line">1、类型联合 </span><br><span class="line">   %union               </span><br><span class="line">   //一般用来定义yacc文件中token所使用的数据类型</span><br><span class="line"></span><br><span class="line">2、终结符与非终结符</span><br><span class="line">   %token &lt;dataType&gt;    //终结符</span><br><span class="line">   %type  &lt;dataType&gt;    //非终结符</span><br><span class="line">   //上述dataType 可以是union中定义的类型，或者头文件中引入的包中的类型</span><br><span class="line">   //终结符与非终结符可以由字母，数字，下划线组成，但必须用字母开头</span><br><span class="line"></span><br><span class="line">3、语法开始符</span><br><span class="line">   %start </span><br><span class="line">   //默认情况，yacc自动将语法规则部分中第一条语法规则左部的非终结符作为语法开始符。</span><br><span class="line"></span><br><span class="line">4、结合性与优先级</span><br><span class="line">   %left       左结合    例：%left &#x27;+&#x27; &#x27;-&#x27;      </span><br><span class="line">                            1+2+3     ==&gt;     (1+2)+3</span><br><span class="line">                            1+2-3     ==&gt;     (1+2)-3</span><br><span class="line">   %right      右结合    例：%right &#x27;+&#x27;      </span><br><span class="line">                            1+2+3     ==&gt;     1+(2+3)</span><br><span class="line">   %nonassoc   不结合    例：%nonassoc &#x27;&lt;&#x27; &#x27;&gt;&#x27;</span><br><span class="line">                            a&lt;b&lt;c     ==&gt;     不允许连用</span><br><span class="line">                            a&lt;b&gt;c     ==&gt;     不允许连用</span><br><span class="line">   // 对于 %left %right %nonassoc</span><br><span class="line">   // 排在前面行的算符比后面行的算符的优先级低；排在同一行的算符优先级相同。</span><br><span class="line">   // 同一优先级的算符，处理结合性或者非结合性时，可以替换考虑</span><br><span class="line">   // 例： 1+2-3      ==&gt;     (1+2)-3</span><br><span class="line">   // 例： a&lt;b&gt;c      ==&gt;     yyerror(),不允许连用</span><br><span class="line"></span><br><span class="line">   %prec       %prec前面的规则优先级与%prec后面的规则相同</span><br><span class="line"></span><br><span class="line">(2) 规则段定义了文法的非终结符及产生式集合，以及当归约整个产生式时应执行的操作。</span><br><span class="line">    通过BNF定义规则。每一条规则中语法符号都有一个语义值。   </span><br><span class="line">    目标符号（冒号左边的语法符号）用$$代替。</span><br><span class="line">    右边语法符号的语义值以此用$1 $2代替,代表第几个参数。</span><br><span class="line">    stmt： </span><br><span class="line">      expr1 expr2</span><br><span class="line">      &#123; </span><br><span class="line">          //yacc中为c的代码。</span><br><span class="line">          //goyacc中为go代码，表示匹配到这条规则时，所需执行的操作</span><br><span class="line">          //func1 可以是引入的包中的操作，也可以是在此.y文件中自定义的</span><br><span class="line">          $$ = func1($1,$2)</span><br><span class="line">      &#125;</span><br><span class="line">      | expr1 expr2 expr3</span><br><span class="line">      &#123;</span><br><span class="line">          $$ = func2($1,$2,$3)</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
 <h3 id="辅助函数段"><a href="#辅助函数段" class="headerlink" title="辅助函数段"></a>辅助函数段</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">包括规则段用到的函数，以及 yylex()，yyerror()，main()，yywrap() 。</span><br><span class="line">1、yylex()</span><br><span class="line">一般是由lex文件生成的，在yyparse()中调用，也可以自定义。</span><br><span class="line">2、yyerror()</span><br><span class="line">在yyparse()中被调用，出现错误时使用</span><br><span class="line">3、yywrap()</span><br><span class="line">在yyparse()中被调用，表示目前文件扫描结束后，下一步的动作</span><br><span class="line">4、yyparse() </span><br><span class="line">由yaccpar根据sql.y文件中定义的规则生成的，c的规则匹配代码</span><br></pre></td></tr></table></figure>
@@ -340,7 +332,7 @@
 <p>Lex应该返回token类型，并将token值放到放在lval中（与yacc的yylval对应）。Error相当于原yacc中的yyerror。</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/golang/tools/blob/master/cmd/goyacc/testdata/expr/expr.y">goyacc官方示例</a></p>
 <h2 id="九、cockroach中的goyacc"><a href="#九、cockroach中的goyacc" class="headerlink" title="九、cockroach中的goyacc"></a>九、cockroach中的goyacc</h2><h3 id="parse解析时序图"><a href="#parse解析时序图" class="headerlink" title="parse解析时序图"></a>parse解析时序图</h3><p><img src="/img/images_yacc/parse.png"></p>
-<h3 id="sql-y生成文件-sql-go"><a href="#sql-y生成文件-sql-go" class="headerlink" title="sql.y生成文件 sql.go"></a>sql.y生成文件 sql.go</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">goyacc生成的</span><br><span class="line"><span class="keyword">type</span> sqlLexer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Lex(lval *sqlSymType) <span class="type">int</span></span><br><span class="line">	Error(s <span class="type">string</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> sqlParser <span class="keyword">interface</span> &#123;</span><br><span class="line">	Parse(sqlLexer) <span class="type">int</span></span><br><span class="line">	Lookahead() <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> sqlParserImpl <span class="keyword">struct</span> &#123;</span><br><span class="line">	lval  sqlSymType</span><br><span class="line">	stack [sqlInitialStackSize]sqlSymType</span><br><span class="line">	char  <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">lval作用：存放token</span><br><span class="line"><span class="keyword">type</span> sqlSymType <span class="keyword">struct</span> &#123;</span><br><span class="line">	yys   <span class="type">int</span></span><br><span class="line">	id    <span class="type">int32</span>         <span class="comment">//token的id，根据sql.y中token的定义顺序，编译生成</span></span><br><span class="line">	pos   <span class="type">int32</span>         <span class="comment">//token开始坐标</span></span><br><span class="line">	str   <span class="type">string</span>        <span class="comment">//token的内容</span></span><br><span class="line">	union sqlSymUnion</span><br><span class="line">&#125;</span><br><span class="line">stack作用：存放state and value，即匹配规则<span class="keyword">type</span>与对应操作</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="sql-y生成文件-sql-go"><a href="#sql-y生成文件-sql-go" class="headerlink" title="sql.y生成文件 sql.go"></a>sql.y生成文件 sql.go</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// goyacc生成的</span></span><br><span class="line"><span class="keyword">type</span> sqlLexer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Lex(lval *sqlSymType) <span class="type">int</span></span><br><span class="line">	Error(s <span class="type">string</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> sqlParser <span class="keyword">interface</span> &#123;</span><br><span class="line">	Parse(sqlLexer) <span class="type">int</span></span><br><span class="line">	Lookahead() <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> sqlParserImpl <span class="keyword">struct</span> &#123;</span><br><span class="line">	lval  sqlSymType</span><br><span class="line">	stack [sqlInitialStackSize]sqlSymType</span><br><span class="line">	char  <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// lval作用：存放token</span></span><br><span class="line"><span class="keyword">type</span> sqlSymType <span class="keyword">struct</span> &#123;</span><br><span class="line">	yys   <span class="type">int</span></span><br><span class="line">	id    <span class="type">int32</span>         <span class="comment">//token的id，根据sql.y中token的定义顺序，编译生成</span></span><br><span class="line">	pos   <span class="type">int32</span>         <span class="comment">//token开始坐标</span></span><br><span class="line">	str   <span class="type">string</span>        <span class="comment">//token的内容</span></span><br><span class="line">	union sqlSymUnion</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// stack作用：存放state and value，即匹配规则type与对应操作</span></span><br></pre></td></tr></table></figure>
 <h3 id=""><a href="#" class="headerlink" title=""></a></h3><h2 id="十、生成bnf文件（EBNF范式）"><a href="#十、生成bnf文件（EBNF范式）" class="headerlink" title="十、生成bnf文件（EBNF范式）"></a>十、生成bnf文件（EBNF范式）</h2><h3 id="文件所在位置-pkg-x2F-cmd-x2F-docgen-x2F-exreact-x2F-extract-go"><a href="#文件所在位置-pkg-x2F-cmd-x2F-docgen-x2F-exreact-x2F-extract-go" class="headerlink" title="文件所在位置 pkg&#x2F;cmd&#x2F;docgen&#x2F;exreact&#x2F;extract.go"></a>文件所在位置 pkg&#x2F;cmd&#x2F;docgen&#x2F;exreact&#x2F;extract.go</h3>
     </div>
 
@@ -367,7 +359,7 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/%E8%A7%A3%E6%9E%90%E5%99%A8/" rel="tag"># 解析器</a>
+              <a href="/tags/cockroachDB/" rel="tag"># cockroachDB</a>
           </div>
 
         
