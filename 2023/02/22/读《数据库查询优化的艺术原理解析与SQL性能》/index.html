@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Garamond:300,300italic,400,400italic,700,700italic%7CPalatino:300,300italic,400,400italic,700,700italic%7CTrebuchet+MS:300,300italic,400,400italic,700,700italic%7CCourier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito2333.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="数据库的传统优化手段，以及在cockroachDB中的应用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读《数据库查询优化的艺术原理解析与SQL性能》">
+<meta property="og:url" content="https://mosquito2333.github.io/2023/02/22/%E8%AF%BB%E3%80%8A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%9A%84%E8%89%BA%E6%9C%AF%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%E4%B8%8ESQL%E6%80%A7%E8%83%BD%E3%80%8B/index.html">
+<meta property="og:site_name" content="一个小仙女的博客">
+<meta property="og:description" content="数据库的传统优化手段，以及在cockroachDB中的应用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mosquito2333.github.io/img/images_optimizer/%E4%BC%98%E5%8C%96%E8%89%BA%E6%9C%AF.jpeg">
+<meta property="article:published_time" content="2023-02-22T10:40:08.000Z">
+<meta property="article:modified_time" content="2023-02-23T05:56:41.290Z">
+<meta property="article:author" content="mosquito2333">
+<meta property="article:tag" content="通用模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mosquito2333.github.io/img/images_optimizer/%E4%BC%98%E5%8C%96%E8%89%BA%E6%9C%AF.jpeg">
+
+
+<link rel="canonical" href="https://mosquito2333.github.io/2023/02/22/%E8%AF%BB%E3%80%8A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%9A%84%E8%89%BA%E6%9C%AF%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%E4%B8%8ESQL%E6%80%A7%E8%83%BD%E3%80%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mosquito2333.github.io/2023/02/22/%E8%AF%BB%E3%80%8A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%9A%84%E8%89%BA%E6%9C%AF%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%E4%B8%8ESQL%E6%80%A7%E8%83%BD%E3%80%8B/","path":"2023/02/22/读《数据库查询优化的艺术原理解析与SQL性能》/","title":"读《数据库查询优化的艺术原理解析与SQL性能》"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>读《数据库查询优化的艺术原理解析与SQL性能》 | 一个小仙女的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">一个小仙女的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">mosquito2333 的 Blogs</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="fa fa-guestbook fa-fw"></i>guestbook</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%AF%87-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E6%8A%80%E6%9C%AF"><span class="nav-number">1.</span> <span class="nav-text">第一篇 查询优化技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E6%8A%80%E6%9C%AF"><span class="nav-number">1.1.</span> <span class="nav-text">一、查询优化技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%9F%A5%E8%AF%A2%E9%87%8D%E7%94%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">1、查询重用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E6%96%B9%E9%9D%A2"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">两个方面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#crdb%E4%B8%AD%E4%BD%BF%E7%94%A8cache"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">crdb中使用cache</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#client-%E7%AB%AFsql%E5%91%BD%E4%BB%A4"><span class="nav-number">1.1.1.2.1.</span> <span class="nav-text">client 端sql命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#go%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%B9%9F%E5%8F%AF%E4%BB%A5%E6%8E%A7%E5%88%B6%E6%98%AF%E5%90%A6%E4%BD%BF%E7%94%A8cache"><span class="nav-number">1.1.1.2.2.</span> <span class="nav-text">go代码中也可以控制是否使用cache</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E6%9F%A5%E8%AF%A2%E9%87%8D%E5%86%99%EF%BC%88%E7%AD%89%E4%BB%B7%E8%BD%AC%E6%8D%A2%EF%BC%8C%E7%BB%93%E6%9E%9C%E7%9B%B8%E5%90%8C%EF%BC%89"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、查询重写（等价转换，结果相同）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%9D%E6%8D%AE"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">依据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.3.</span> <span class="nav-text">3、查询优化算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E5%B9%B6%E5%8F%91%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.4.</span> <span class="nav-text">4、并发查询优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.5.</span> <span class="nav-text">5、分布式查询优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%80%BB%E8%BE%91%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">二、逻辑查询优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、理论基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E6%9F%A5%E8%AF%A2%E9%87%8D%E5%86%99%E8%A7%84%E5%88%99"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、查询重写规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%89%A9%E7%90%86%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">三、物理查询优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%9F%A5%E8%AF%A2%E4%BB%A3%E4%BB%B7%E4%BC%B0%E7%AE%97"><span class="nav-number">1.3.1.</span> <span class="nav-text">1、查询代价估算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E8%A1%A8%E6%89%AB%E6%8F%8F%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">单表扫描算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95"><span class="nav-number">1.3.3.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A4%E8%A1%A8%E8%BF%9E%E6%8E%A5%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.4.</span> <span class="nav-text">两表连接算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%A1%A8%E8%BF%9E%E6%8E%A5%E7%AE%97%E6%B3%95"><span class="nav-number">1.3.5.</span> <span class="nav-text">多表连接算法</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito2333"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">mosquito2333</p>
+  <div class="site-description" itemprop="description">随遇而安，寂静生长。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mosquito2333" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mosquito2333" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3030823975@qq.com" title="E-Mail → mailto:3030823975@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/mosquito201809" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;mosquito201809" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" rel="noopener me" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/sun_liwen" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;sun_liwen" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+	<div class="post-block animated fadeIn">
+		<h5 class="post-title" itemprop="name headline">
+			<a target="_blank" rel="noopener" href="https://github.com/mosquito2333" class="post-title-link" itemprop="url">Github Contribution Calendar</a>
+		</h5>
+		<div class="post-body animated fadeInDown" itemprop="articleBody">
+			<img style="width: 100%; margin-top: 30px;" src="https://ghchart.rshah.org/e77c8e/mosquito2333" alt="mosquito2333's Blue Github Chart" />
+		</div>
+	</div>
+      
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mosquito2333.github.io/2023/02/22/%E8%AF%BB%E3%80%8A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%9A%84%E8%89%BA%E6%9C%AF%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%E4%B8%8ESQL%E6%80%A7%E8%83%BD%E3%80%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="mosquito2333">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个小仙女的博客">
+      <meta itemprop="description" content="随遇而安，寂静生长。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="读《数据库查询优化的艺术原理解析与SQL性能》 | 一个小仙女的博客">
+      <meta itemprop="description" content="数据库的传统优化手段，以及在cockroachDB中的应用">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          读《数据库查询优化的艺术原理解析与SQL性能》
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-22 18:40:08" itemprop="dateCreated datePublished" datetime="2023-02-22T18:40:08+08:00">2023-02-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-23 13:56:41" itemprop="dateModified" datetime="2023-02-23T13:56:41+08:00">2023-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E4%BC%98%E5%8C%96%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">优化器</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">数据库的传统优化手段，以及在cockroachDB中的应用</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="第一篇-查询优化技术"><a href="#第一篇-查询优化技术" class="headerlink" title="第一篇 查询优化技术"></a>第一篇 查询优化技术</h1><h2 id="一、查询优化技术"><a href="#一、查询优化技术" class="headerlink" title="一、查询优化技术"></a>一、查询优化技术</h2><p><img src="/img/images_optimizer/%E4%BC%98%E5%8C%96%E8%89%BA%E6%9C%AF.jpeg"><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/139052421">上述图片来自知乎</a></p>
+<h3 id="1、查询重用"><a href="#1、查询重用" class="headerlink" title="1、查询重用"></a>1、查询重用</h3><h4 id="两个方面"><a href="#两个方面" class="headerlink" title="两个方面"></a>两个方面</h4><ul>
+<li>查询结果重用(sql文本及其执行结果)</li>
+<li>查询计划重用(缓存sql语句的执行计划以及语法树)</li>
+</ul>
+<h4 id="crdb中使用cache"><a href="#crdb中使用cache" class="headerlink" title="crdb中使用cache"></a>crdb中使用cache</h4><h5 id="client-端sql命令"><a href="#client-端sql命令" class="headerlink" title="client 端sql命令"></a>client 端sql命令</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> cluster setting sql.query_cache.enabled <span class="operator">=</span> <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
+<h5 id="go代码中也可以控制是否使用cache"><a href="#go代码中也可以控制是否使用cache" class="headerlink" title="go代码中也可以控制是否使用cache"></a>go代码中也可以控制是否使用cache</h5><h3 id="2、查询重写（等价转换，结果相同）"><a href="#2、查询重写（等价转换，结果相同）" class="headerlink" title="2、查询重写（等价转换，结果相同）"></a>2、查询重写（等价转换，结果相同）</h3><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ul>
+<li>将查询转化成等价的，效率更高的形式</li>
+<li>将查询转化成等价简单且不受顺序限制的形式</li>
+</ul>
+<h4 id="依据"><a href="#依据" class="headerlink" title="依据"></a>依据</h4><p>关系代数的等价变换规则为查询重写提供理论上的支持</p>
+<h4 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h4><p>对查询优化技术进行分类的四个角度</p>
+<ul>
+<li>逻辑优化<ul>
+<li>语法级（有些语句语法上等价）</li>
+<li>代数级（a&#x3D;b and b&#x3D;c –&gt; a&#x3D;c）</li>
+<li>语义级（根据完整性约束，对语义进行理解，推理）</li>
+</ul>
+</li>
+<li>物理级（代价模型，多种等价计划中，选代价最小的）</li>
+</ul>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><ul>
+<li>将过程性查询转化为描述性查询（视图）</li>
+<li>将复杂查询（如嵌套子查询、外连接、嵌套连接）尽可能转化为多表连接查询</li>
+<li>将效率低的谓词转化为等价的效率高的谓词</li>
+<li>利用等式和不等式的关系简化where、having和on条件</li>
+</ul>
+<h3 id="3、查询优化算法"><a href="#3、查询优化算法" class="headerlink" title="3、查询优化算法"></a>3、查询优化算法</h3><ul>
+<li>关系节点<ul>
+<li>单表节点（考虑单表的数据获取方式。1、IO 2、索引 3、先通过索引定位再去IO拿数据）</li>
+<li>两表节点（考虑两表的连接方式，连接顺序）</li>
+<li>多表中间节点（）</li>
+</ul>
+</li>
+<li>查询策略<ul>
+<li>基于规则优化</li>
+<li>基于代价优化</li>
+</ul>
+</li>
+<li>连接算法<ul>
+<li>SYSTEM-R算法</li>
+<li>启发式搜索算法（crdb使用）</li>
+<li>贪婪算法</li>
+<li>动态规划算法</li>
+<li>遗传算法</li>
+</ul>
+</li>
+<li>join 方式介绍（打算新开一篇文章展开写）</li>
+</ul>
+<h3 id="4、并发查询优化"><a href="#4、并发查询优化" class="headerlink" title="4、并发查询优化"></a>4、并发查询优化</h3><h3 id="5、分布式查询优化"><a href="#5、分布式查询优化" class="headerlink" title="5、分布式查询优化"></a>5、分布式查询优化</h3><h2 id="二、逻辑查询优化"><a href="#二、逻辑查询优化" class="headerlink" title="二、逻辑查询优化"></a>二、逻辑查询优化</h2><h3 id="1、理论基础"><a href="#1、理论基础" class="headerlink" title="1、理论基础"></a>1、理论基础</h3><ul>
+<li><p>关系代数</p>
+<ul>
+<li>传统集合运算符<ul>
+<li>并 (union，合并元祖)</li>
+<li>交 (intersection，两次not in实现)</li>
+<li>差 (difference，一次not in实现)</li>
+<li>积 (extended cartesian product，无连接条件，我理解是笛卡尔积)</li>
+</ul>
+</li>
+<li>关系运算符    <ul>
+<li>选择 (select)<ul>
+<li>投影 (project)</li>
+<li>连接 (join，R <op> S) (不知道哪些属于基本的，哪些属于扩展的)             </li>
+<li>自然连接(inner join，去掉重复列，同时从行列角度进行计算)<br>    - θ-连接(θ join, θ 包括 &gt;, &gt;&#x3D;, &lt;, &lt;&#x3D;, &#x3D;)</li>
+<li>等值连接(semi join, 操作符是等号的θ连接)<br>  - 半连接(exists, in)<br>  - 反连接(anti join,半连接的补集，又名反半连接)<br>  - 外连接(left&#x2F;right&#x2F;full join)<ul>
+<li>左外连接(保留R中所有元组。若S中有和R公共属性名字上相等的元组，正常连接，否则，将其他列设置为NULL)</li>
+<li>右外连接(保留S中所有元组。若R中有和S公共属性名字上相等的元组，正常连接，否则，将其他&gt;列设置为NULL)</li>
+<li>全外连接(保留R和S中所有元组。若在另一关系中公共属性名字上相等的元组，正常连接，否则，将其他列设置为NULL)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>除(divide， 使用not exists的子查询实现)</li>
+</ul>
+</li>
+<li>辅助运算符<ul>
+<li>算数比较符</li>
+<li>逻辑运算符</li>
+</ul>
+</li>
+<li>关系扩展运算符<ul>
+<li>半连接(SEMIJOIN)</li>
+<li>半差(SEMIDIFFERENCE)</li>
+<li>扩展(EXTEND)</li>
+<li>合计(COMPOSITION)</li>
+<li>传递闭包(TCLOSE)</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>关系代数的等价变换规则对优化的指导意义</p>
+<ul>
+<li>书上非常详细，等会再补充详细描述吧</li>
+</ul>
+</li>
+</ul>
+<h3 id="2、查询重写规则"><a href="#2、查询重写规则" class="headerlink" title="2、查询重写规则"></a>2、查询重写规则</h3><ul>
+<li><p>子查询优化</p>
+<ul>
+<li><p>子查询出现的位置，以及对优化的影响</p>
+<ul>
+<li>投影列(1、只能是标量子查询; 2、否则报错:子查询必须返回一个字段)</li>
+<li>from子句(1、非相关子查询，可以优化，上拉; 2、相关子查询报报错: from子句中的子查询无法参考相同查询级别中的关系)</li>
+<li>where子句(1、可能是条件表达式（filter）的一部分，variable op 子查询。op包括&gt;,&gt;&#x3D;,&#x3D;,&lt;,&lt;&#x3D;。此时等值操作必须是标量子查询; 2、也可能是谓词指定的一些操作如in，between，exists)</li>
+<li>join&#x2F;on子句(1、join块类似from子句 2、on块类似于where子句)</li>
+<li>groupby子句(目标列必须与groupby的列相关联，但是此处的子查询无意义)</li>
+<li>orderby子句(orderby 操作是作用在整条sql语句上的，子查询用在这也没什么意义，可以稍后试一条语句)</li>
+</ul>
+</li>
+<li><p>子查询分类</p>
+<ul>
+<li><p>从与外层关系来看</p>
+<ul>
+<li>相关子查询(子查询的执行依赖于外层的属性)</li>
+<li>非相关子查询</li>
+</ul>
+</li>
+<li><p>从特定谓词来看</p>
+<ul>
+<li>IN&#x2F;ALL&#x2F;ANY&#x2F;SOME子查询()</li>
+<li>EXISTS子查询()</li>
+</ul>
+</li>
+<li><p>从语句构成复杂程度来看</p>
+<ul>
+<li>SPJ(由查询投影连接操作组成的子查询)</li>
+<li>GROUPBY()</li>
+<li>其他子查询(上述基础上加上其他子句，如top-N，LIMIT&#x2F;OFFSET，集合，排序等操作)</li>
+</ul>
+</li>
+<li><p>从结果集的角度来看</p>
+<ul>
+<li><p>标量子查询(返回的结果集是一个单一值, a single value)</p>
+</li>
+<li><p>列子查询(返回一列)</p>
+</li>
+<li><p>行子查询(返回一行元组，不知道书上这俩是不是写反了啊，感觉不太对啊)</p>
+</li>
+<li><p>表子查询(返回一个表，多行多列)</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>优化原因</p>
+<ul>
+<li>传统数据库一般对子查询采取嵌套执行的方式，即对父查询查询出的每一行数据都执行一遍子查询。这样效率低</li>
+<li>子查询优化后的好处：<ul>
+<li>子查询不会执行很多次</li>
+<li>优化器可以根据统计信息选择不同的连接方法和连接顺序</li>
+<li>子查询中的连接条件和过滤条件上拉到父查询。优化器就可以对这些条件进行下推，提高效率。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>子查询优化技术</p>
+<ul>
+<li>子查询合并(多个子查询合并成一个，可以把多次扫描多次连接减少为单次扫描单次连接)</li>
+<li>子查询展开(又名查询反嵌套，子查询上拉，将一些子查询置于外层父查询中，作为连接关系与父查询并列。实质上是把某些子查询重写为等价的多表连接操作)<ul>
+<li>子查询中出现了 聚集、GROUPBY、DISTINCT子句只能单独求解，不可以拉到上层。</li>
+<li>将简单查询（SPJ格式）的子查询拉到上层。前提是上拉后的结果不能带来多余元组。所以子查询的展开需遵循如下规则：<ul>
+<li>a、上层查询的结果没有重复(即select子句中包含主码)，则可以展开子查询，并且在展开后的select子句前面加上distinct标记。</li>
+<li>b、如果上层查询select中有distinct标记，则可以直接对子查询进行展开</li>
+<li>c、如果内层查询结果没有重复元组，则可以展开。</li>
+<li>重写为等价的多表连接操作</li>
+<li>需要确保展开后的DISTINCT属性，去重</li>
+<li>IN</li>
+<li>ALL&#x2F;ANY&#x2F;SOME</li>
+<li>EXISTS</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>聚集子查询消除(将聚集函数上推，将子查询转变为一个新的不含聚集函数的子查询，并与父查询的部分或者全部表做左外连接)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>视图重写</p>
+<ul>
+<li>SPJ简单视图</li>
+<li>非SPJ复杂视图</li>
+</ul>
+</li>
+<li><p>等价谓词重写</p>
+<ul>
+<li>LIKE规则<ul>
+<li>LIKE ‘Abc%’ -&gt; &gt;&#x3D;’Abc’ AND &lt; ‘Abd’</li>
+</ul>
+</li>
+<li>BETWEEN-AND规则<ul>
+<li>与LIKE类似</li>
+</ul>
+</li>
+<li>IN转换OR规则</li>
+<li>IN转换ANY规则</li>
+<li>OR转换ANY规则</li>
+<li>ALL&#x2F;ANY转换集函数规则<ul>
+<li>等价的MIN&#x2F;MAX谓词</li>
+</ul>
+</li>
+<li>NOT规则</li>
+<li>OR重写并集UNION规则</li>
+</ul>
+</li>
+<li><p>条件化简</p>
+<ul>
+<li>HAVING条件并入WHERE条件<ul>
+<li>不存在GROUPBY&#x2F;聚集函数</li>
+</ul>
+</li>
+<li>去除表达式中冗余的括号</li>
+<li>常量传递</li>
+<li>消除死码</li>
+<li>表达式计算</li>
+<li>等式变换</li>
+<li>不等式变换</li>
+<li>布尔表达式变换<ul>
+<li>谓词传递闭包</li>
+<li>转换成等价的合取范式(CNF)</li>
+<li>索引的利用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>外连接消除</p>
+<ul>
+<li>意义<ul>
+<li>外连接操作时间多于内连接</li>
+<li>更灵活的表连接顺序</li>
+<li>块嵌套连接&#x2F;索引循环连接将规模小作为外表，可以减少IO开销</li>
+</ul>
+</li>
+<li>外连接转换<ul>
+<li>内连接<ul>
+<li>Pairs</li>
+</ul>
+</li>
+<li>左外连接<ul>
+<li>Pairs + LHS</li>
+</ul>
+</li>
+<li>右外连接<ul>
+<li>Pairs + RHS</li>
+</ul>
+</li>
+<li>全外连接<ul>
+<li>Pairs + LHS + RHS</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>空值拒绝(reject-NULL)<ul>
+<li>从结果中排除外连接右侧生成的值为NULL的行</li>
+<li>外连接的提供空值的一侧为另一侧的每行只返回一行</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>嵌套连接消除</p>
+<ul>
+<li>如只包含内连接，则表次序可以交换</li>
+<li>如包含外连接，表次序不可交换</li>
+</ul>
+</li>
+<li><p>连接消除</p>
+<ul>
+<li>主外键关系表连接，可消除主键表</li>
+<li>唯一键作为连接条件，三表内连接可去除中间表(只作为连接条件)</li>
+<li>可消除的表作为连接对象外，不出现在任何子句中</li>
+</ul>
+</li>
+<li><p>语义优化&#x2F;语义转换</p>
+<ul>
+<li>连接消除<ul>
+<li>推知简化操作</li>
+</ul>
+</li>
+<li>连接引入<ul>
+<li>使原关系变小&#x2F;选择率降低</li>
+</ul>
+</li>
+<li>谓词引入<ul>
+<li>如引入基于索引的列，使查询更快</li>
+</ul>
+</li>
+<li>检测空回答集<ul>
+<li>谓词与约束相悖</li>
+</ul>
+</li>
+<li>排序优化<ul>
+<li>如有索引，排序操作可省略</li>
+</ul>
+</li>
+<li>唯一性使用</li>
+</ul>
+</li>
+<li><p>非SPJ的优化</p>
+<ul>
+<li>GROUPBY优化<ul>
+<li>分组操作下移<ul>
+<li>较大幅度地减少元组个数</li>
+</ul>
+</li>
+<li>分组操作上移<ul>
+<li>连标能过滤大部分元组</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ORDERBY优化<ul>
+<li>排序消除<ul>
+<li>利用索引</li>
+</ul>
+</li>
+<li>排序下推</li>
+</ul>
+</li>
+<li>DISTINCT优化<ul>
+<li>Distinct消除</li>
+<li>Distinct推入</li>
+<li>Distinct迁移</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="三、物理查询优化"><a href="#三、物理查询优化" class="headerlink" title="三、物理查询优化"></a>三、物理查询优化</h2><h3 id="1、查询代价估算"><a href="#1、查询代价估算" class="headerlink" title="1、查询代价估算"></a>1、查询代价估算</h3><ul>
+<li>代价模型<ul>
+<li>IO代价+CPU代价</li>
+</ul>
+</li>
+<li>选择率常用方法<ul>
+<li>无参数方法</li>
+<li>参数法</li>
+<li>曲线拟合法</li>
+<li>抽样法</li>
+<li>综合法</li>
+</ul>
+</li>
+</ul>
+<h3 id="单表扫描算法"><a href="#单表扫描算法" class="headerlink" title="单表扫描算法"></a>单表扫描算法</h3><ul>
+<li>算法<ul>
+<li>顺序扫描</li>
+<li>索引扫描</li>
+<li>只读索引扫描</li>
+<li>行扫描</li>
+<li>并行表扫描</li>
+<li>并行索引扫描</li>
+<li>组合多个索引扫描</li>
+</ul>
+</li>
+<li>代价估计<ul>
+<li>顺序扫描<ul>
+<li>N_page<em>a_page_IO_time+N_tuple</em>a_tuple_CPU_time</li>
+</ul>
+</li>
+<li>索引扫描<ul>
+<li>N_page_index<em>a_page_IO_time+N_tuple</em>a_tuple_CPU_time</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><ul>
+<li>索引扫描<ul>
+<li>Seq Scan</li>
+<li>Index Scan</li>
+<li>Index only Scan</li>
+<li>Bitmap Index Scan</li>
+</ul>
+</li>
+<li>索引列的位置<ul>
+<li>目标列<ul>
+<li>一般不使用索引</li>
+<li>MAX&#x2F;MIN可使用索引</li>
+</ul>
+</li>
+<li>Where&#x2F;Join On<ul>
+<li>key <op> 常量</li>
+<li>可高效使用索引</li>
+</ul>
+</li>
+<li>GROUPBY<ul>
+<li>一般不使用</li>
+</ul>
+</li>
+<li>HAVING<ul>
+<li>GROUPBY&#x2F;HAVING子句包含索引列</li>
+</ul>
+</li>
+<li>ORDERBY</li>
+<li>DISTINCT</li>
+</ul>
+</li>
+<li>联合索引<ul>
+<li>前缀部分索引</li>
+</ul>
+</li>
+<li>多个索引<ul>
+<li>选择相对简单的索引</li>
+</ul>
+</li>
+</ul>
+<h3 id="两表连接算法"><a href="#两表连接算法" class="headerlink" title="两表连接算法"></a>两表连接算法</h3><ul>
+<li>嵌套循环连接<ul>
+<li>基于块的嵌套循环连接</li>
+</ul>
+</li>
+<li>排序归并连接</li>
+<li>Hash连接<ul>
+<li>简单Hash连接</li>
+<li>优美Hash连接</li>
+<li>混合Hash连接</li>
+</ul>
+</li>
+<li>读取数据的趟数</li>
+</ul>
+<h3 id="多表连接算法"><a href="#多表连接算法" class="headerlink" title="多表连接算法"></a>多表连接算法</h3><ul>
+<li>问题<ul>
+<li>多表连接顺序</li>
+<li>多表连接的搜索空间</li>
+</ul>
+</li>
+<li>多表连接顺序<ul>
+<li>连接树</li>
+<li>表连接搜索算法<ul>
+<li>动态规划</li>
+<li>启发式方法</li>
+<li>贪婪算法</li>
+<li>System R算法<ul>
+<li>保存子树的最优查询计划和次优查询计划</li>
+</ul>
+</li>
+<li>遗传算法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>mosquito2333
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://mosquito2333.github.io/2023/02/22/%E8%AF%BB%E3%80%8A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%9A%84%E8%89%BA%E6%9C%AF%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%E4%B8%8ESQL%E6%80%A7%E8%83%BD%E3%80%8B/" title="读《数据库查询优化的艺术原理解析与SQL性能》">https://mosquito2333.github.io/2023/02/22/读《数据库查询优化的艺术原理解析与SQL性能》/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E9%80%9A%E7%94%A8%E6%A8%A1%E5%BC%8F/" rel="tag"># 通用模式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/22/%E5%B8%B8%E7%94%A8%E7%9A%84vim%E6%93%8D%E4%BD%9C/" rel="prev" title="常用的vim操作">
+                  <i class="fa fa-chevron-left"></i> 常用的vim操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito2333</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/mosquito2333" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"mosquito2333","repo":"mosquito2333_comments","client_id":"3efd199fcf375c5193c0","client_secret":"36622e02f9d0533f53f341c10b3b9563e9c9fe03","admin_user":"mosquito2333","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"e9329e71c492eede872f9c777aa0bb35"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

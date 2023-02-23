@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Garamond:300,300italic,400,400italic,700,700italic%7CPalatino:300,300italic,400,400italic,700,700italic%7CTrebuchet+MS:300,300italic,400,400italic,700,700italic%7CCourier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito2333.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="a &gt; b and b &gt; c --&gt; a &gt; c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谓词传递闭包">
+<meta property="og:url" content="https://mosquito2333.github.io/2023/02/21/%E8%B0%93%E8%AF%8D%E4%BC%A0%E9%80%92/index.html">
+<meta property="og:site_name" content="一个小仙女的博客">
+<meta property="og:description" content="a &gt; b and b &gt; c --&gt; a &gt; c">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-21T08:52:02.000Z">
+<meta property="article:modified_time" content="2023-02-22T03:40:58.873Z">
+<meta property="article:author" content="mosquito2333">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mosquito2333.github.io/2023/02/21/%E8%B0%93%E8%AF%8D%E4%BC%A0%E9%80%92/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mosquito2333.github.io/2023/02/21/%E8%B0%93%E8%AF%8D%E4%BC%A0%E9%80%92/","path":"2023/02/21/谓词传递/","title":"谓词传递闭包"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>谓词传递闭包 | 一个小仙女的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">一个小仙女的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">mosquito2333 的 Blogs</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="fa fa-guestbook fa-fw"></i>guestbook</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#crdb-%E4%B8%AD%E7%9A%84%E8%B0%93%E8%AF%8D%E4%BC%A0%E9%80%92%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.</span> <span class="nav-text">crdb 中的谓词传递实例</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito2333"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">mosquito2333</p>
+  <div class="site-description" itemprop="description">随遇而安，寂静生长。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mosquito2333" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mosquito2333" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3030823975@qq.com" title="E-Mail → mailto:3030823975@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/mosquito201809" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;mosquito201809" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" rel="noopener me" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/sun_liwen" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;sun_liwen" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+      
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mosquito2333.github.io/2023/02/21/%E8%B0%93%E8%AF%8D%E4%BC%A0%E9%80%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="mosquito2333">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个小仙女的博客">
+      <meta itemprop="description" content="随遇而安，寂静生长。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="谓词传递闭包 | 一个小仙女的博客">
+      <meta itemprop="description" content="a > b and b > c --> a > c">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          谓词传递闭包
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-21 16:52:02" itemprop="dateCreated datePublished" datetime="2023-02-21T16:52:02+08:00">2023-02-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-02-22 11:40:58" itemprop="dateModified" datetime="2023-02-22T11:40:58+08:00">2023-02-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/cockroachDB/" itemprop="url" rel="index"><span itemprop="name">cockroachDB</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/cockroachDB/%E4%BC%98%E5%8C%96%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">优化器</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/cockroachDB/%E4%BC%98%E5%8C%96%E5%99%A8/rbo/" itemprop="url" rel="index"><span itemprop="name">rbo</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+            <div class="post-description">a > b and b > c --> a > c</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="crdb-中的谓词传递实例"><a href="#crdb-中的谓词传递实例" class="headerlink" title="crdb 中的谓词传递实例"></a>crdb 中的谓词传递实例</h3><p>在crdb中，对于a &#x3D; b, b &#x3D; c 这样的等式是做了传递的，代码详情见<br>pkg&#x2F;sql&#x2F;opt&#x2F;norm&#x2F;inline_funcs.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Recursively walk the tree looking for references to projection expressions</span></span><br><span class="line"><span class="comment">// that need to be replaced.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> inlineProjections(e opt.Expr, projections memo.ProjectionsExpr) opt.Expr &#123;</span><br><span class="line">	<span class="keyword">var</span> replace ReplaceFunc</span><br><span class="line">	replace = <span class="function"><span class="keyword">func</span><span class="params">(e opt.Expr)</span></span> opt.Expr &#123;</span><br><span class="line">		<span class="keyword">switch</span> t := e.(<span class="keyword">type</span>) &#123;</span><br><span class="line">		<span class="keyword">case</span> *memo.VariableExpr:</span><br><span class="line">			<span class="keyword">for</span> i := <span class="keyword">range</span> projections &#123;</span><br><span class="line">				<span class="keyword">if</span> projections[i].Col == t.Col &#123;</span><br><span class="line">					<span class="keyword">return</span> projections[i].Element</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> t</span><br><span class="line"></span><br><span class="line">		<span class="keyword">case</span> memo.RelExpr:</span><br><span class="line">			<span class="keyword">if</span> !c.OuterCols(t).Empty() &#123;</span><br><span class="line">				<span class="comment">// Should have prevented this in HasDuplicateRefs/HasCorrelatedSubquery.</span></span><br><span class="line">				<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;cannot inline references within correlated subqueries&quot;</span>))</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">// No projections references possible, since there are no outer cols.</span></span><br><span class="line">			<span class="keyword">return</span> t</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> c.f.Replace(e, replace)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> replace(e)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> extractVarEqualsConst(</span><br><span class="line">	e opt.Expr,</span><br><span class="line">) (ok <span class="type">bool</span>, left *memo.VariableExpr, right *memo.ConstExpr) &#123;</span><br><span class="line">	<span class="keyword">if</span> eq, ok := e.(*memo.EqExpr); ok &#123;</span><br><span class="line">		<span class="keyword">if</span> l, ok := eq.Left.(*memo.VariableExpr); ok &#123;</span><br><span class="line">			<span class="keyword">if</span> r, ok := eq.Right.(*memo.ConstExpr); ok &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">true</span>, l, r</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>, <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// CanInlineConstVar returns true if there is an opportunity in the filters to</span></span><br><span class="line"><span class="comment">// inline a variable restricted to be a constant, as in:</span></span><br><span class="line"><span class="comment">//   SELECT * FROM foo WHERE a = 4 AND a IN (1, 2, 3, 4).</span></span><br><span class="line"><span class="comment">// =&gt;</span></span><br><span class="line"><span class="comment">//   SELECT * FROM foo WHERE a = 4 AND 4 IN (1, 2, 3, 4).</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> CanInlineConstVar(f memo.FiltersExpr) <span class="type">bool</span> &#123;</span><br><span class="line">	<span class="comment">// usedIndices tracks the set of filter indices we&#x27;ve used to infer constant</span></span><br><span class="line">	<span class="comment">// values, so we don&#x27;t inline into them.</span></span><br><span class="line">	<span class="keyword">var</span> usedIndices util.FastIntSet</span><br><span class="line">	<span class="comment">// fixedCols is the set of columns that the filters restrict to be a constant</span></span><br><span class="line">	<span class="comment">// value.</span></span><br><span class="line">	<span class="keyword">var</span> fixedCols opt.ColSet</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> f &#123;</span><br><span class="line">		<span class="keyword">if</span> ok, l, _ := c.extractVarEqualsConst(f[i].Condition); ok &#123;</span><br><span class="line">			colType := c.mem.Metadata().ColumnMeta(l.Col).Type</span><br><span class="line">			<span class="keyword">if</span> colinfo.CanHaveCompositeKeyEncoding(colType) &#123;</span><br><span class="line">				<span class="comment">// TODO(justin): allow inlining if the check we&#x27;re doing is oblivious</span></span><br><span class="line">				<span class="comment">// to composite-ness.</span></span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> !fixedCols.Contains(l.Col) &#123;</span><br><span class="line">				fixedCols.Add(l.Col)</span><br><span class="line">				usedIndices.Add(i)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> f &#123;</span><br><span class="line">		<span class="keyword">if</span> usedIndices.Contains(i) &#123;</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> f[i].ScalarProps().OuterCols.Intersects(fixedCols) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// InlineConstVar performs the inlining detected by CanInlineConstVar.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> InlineConstVar(f memo.FiltersExpr) memo.FiltersExpr &#123;</span><br><span class="line">	<span class="comment">// usedIndices tracks the set of filter indices we&#x27;ve used to infer constant</span></span><br><span class="line">	<span class="comment">// values, so we don&#x27;t inline into them.</span></span><br><span class="line">	<span class="keyword">var</span> usedIndices util.FastIntSet</span><br><span class="line">	<span class="comment">// fixedCols is the set of columns that the filters restrict to be a constant</span></span><br><span class="line">	<span class="comment">// value.</span></span><br><span class="line">	<span class="keyword">var</span> fixedCols opt.ColSet</span><br><span class="line">	<span class="comment">// vals maps columns which are restricted to be constant to the value they</span></span><br><span class="line">	<span class="comment">// are restricted to.</span></span><br><span class="line">	vals := <span class="built_in">make</span>(<span class="keyword">map</span>[opt.ColumnID]opt.ScalarExpr)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> f &#123;</span><br><span class="line">		<span class="keyword">if</span> ok, v, e := c.extractVarEqualsConst(f[i].Condition); ok &#123;</span><br><span class="line">			colType := c.mem.Metadata().ColumnMeta(v.Col).Type</span><br><span class="line">			<span class="keyword">if</span> colinfo.CanHaveCompositeKeyEncoding(colType) &#123;</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> _, ok := vals[v.Col]; !ok &#123;</span><br><span class="line">				vals[v.Col] = e</span><br><span class="line">				fixedCols.Add(v.Col)</span><br><span class="line">				usedIndices.Add(i)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> replace ReplaceFunc</span><br><span class="line">	replace = <span class="function"><span class="keyword">func</span><span class="params">(nd opt.Expr)</span></span> opt.Expr &#123;</span><br><span class="line">		<span class="keyword">if</span> t, ok := nd.(*memo.VariableExpr); ok &#123;</span><br><span class="line">			<span class="keyword">if</span> e, ok := vals[t.Col]; ok &#123;</span><br><span class="line">				<span class="keyword">return</span> e</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> c.f.Replace(nd, replace)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	result := <span class="built_in">make</span>(memo.FiltersExpr, <span class="built_in">len</span>(f))</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> f &#123;</span><br><span class="line">		inliningNeeded := f[i].ScalarProps().OuterCols.Intersects(fixedCols)</span><br><span class="line">		<span class="comment">// Don&#x27;t inline if we used this position to infer a constant value, or if</span></span><br><span class="line">		<span class="comment">// the expression doesn&#x27;t contain any fixed columns.</span></span><br><span class="line">		<span class="keyword">if</span> usedIndices.Contains(i) || !inliningNeeded &#123;</span><br><span class="line">			result[i] = f[i]</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			newCondition := replace(f[i].Condition).(opt.ScalarExpr)</span><br><span class="line">			result[i] = c.f.ConstructFiltersItem(newCondition)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>就原本的例子可以添加符号为 &gt;, &gt;&#x3D;, &lt;, &lt;&#x3D; 等相同符号的例子<br>我的代码实现</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> extractVarOpExpr(</span><br><span class="line">	e opt.Expr,</span><br><span class="line">) (</span><br><span class="line">	isCompareOp <span class="type">bool</span>,</span><br><span class="line">	isRightConst <span class="type">bool</span>,</span><br><span class="line">	isRange <span class="type">bool</span>,</span><br><span class="line">	left *memo.VariableExpr,</span><br><span class="line">	right *memo.VariableExpr,</span><br><span class="line">) &#123;</span><br><span class="line">	<span class="keyword">switch</span> v := e.(<span class="keyword">type</span>) &#123;</span><br><span class="line">	<span class="keyword">case</span> *memo.EqExpr, *memo.GtExpr, *memo.GeExpr, *memo.LtExpr, *memo.LeExpr:</span><br><span class="line">		<span class="keyword">if</span> l, ok := v.Child(<span class="number">0</span>).(*memo.VariableExpr); ok &#123;</span><br><span class="line">			<span class="keyword">if</span> _, ok := e.Child(<span class="number">1</span>).(*memo.ConstExpr); ok &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">false</span>, l, <span class="literal">nil</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> r, ok := e.Child(<span class="number">1</span>).(*memo.VariableExpr); ok &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">true</span>, <span class="literal">false</span>, <span class="literal">false</span>, l, r</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">case</span> *memo.RangeExpr:</span><br><span class="line">		<span class="keyword">if</span> _, ok := v.And.(*memo.AndExpr); ok &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">true</span>, <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// classifyFilters gets the filter whose operator is in &#123; &gt;, &gt;=, &lt;, &lt;= ,= &#125;,</span></span><br><span class="line"><span class="comment">// and then classifies it according to the type of the two parameters.</span></span><br><span class="line"><span class="comment">// varConFilters contains filter whose Left is a variable and Right is a constant.</span></span><br><span class="line"><span class="comment">// Correspondingly, varVarFilters contains filter whose Left and Right are both variable.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> classifyFilters(</span><br><span class="line">	f memo.FiltersExpr,</span><br><span class="line">) (varConFilters memo.FiltersExpr, varVarFilters memo.FiltersExpr, haveRange <span class="type">bool</span>) &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> f &#123;</span><br><span class="line">		isCompareOp, isRightConst, isRange, _, _ := c.extractVarOpExpr(f[i].Condition)</span><br><span class="line">		<span class="keyword">if</span> isRange &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">nil</span>, <span class="literal">true</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> isCompareOp &#123;</span><br><span class="line">			<span class="comment">// Considering that it may be more consuming to determine whether f[i]</span></span><br><span class="line">			<span class="comment">// is contained in varConFilters or varVarFilters, it is allowed to</span></span><br><span class="line">			<span class="comment">// contain duplicate elements in them.</span></span><br><span class="line">			<span class="keyword">if</span> isRightConst &#123;</span><br><span class="line">				varConFilters = <span class="built_in">append</span>(varConFilters, f[i])</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				varVarFilters = <span class="built_in">append</span>(varVarFilters, f[i])</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> varConFilters, varVarFilters, <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// isContainInArray is true	if the filters contains the item.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isContainInArray</span><span class="params">(item memo.FiltersItem, filters memo.FiltersExpr)</span></span> <span class="type">bool</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> item.Condition == <span class="literal">nil</span> || filters == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> _, eachFilter := <span class="keyword">range</span> filters &#123;</span><br><span class="line">		<span class="keyword">if</span> eachFilter.Condition == item.Condition &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// CanInlineVariableOpConst estimates if there is an opportunity in the filters to</span></span><br><span class="line"><span class="comment">// inline a variable, as in:</span></span><br><span class="line"><span class="comment">// between  =、 &lt;=、 &gt;=、 &lt;、 &gt;。</span></span><br><span class="line"><span class="comment">//   SELECT * FROM foo WHERE a = 4 AND  a &gt; b</span></span><br><span class="line"><span class="comment">// =&gt;</span></span><br><span class="line"><span class="comment">//   SELECT * FROM foo WHERE a = 4 AND a &gt; b and b &lt; 4.</span></span><br><span class="line"><span class="comment">// It will return false if there is no new filter can be generated or</span></span><br><span class="line"><span class="comment">// filters contains RangeExpr.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> CanInlineVariableOpConst(f memo.FiltersExpr) <span class="type">bool</span> &#123;</span><br><span class="line">	varConFilters, varVarFilters, haveRange := c.classifyFilters(f)</span><br><span class="line">	<span class="comment">// If filters contains RangeExpr, it means that lower priority rule</span></span><br><span class="line">	<span class="comment">// ConsolidateSelectFilters have been executed to generate rangeExpr,</span></span><br><span class="line">	<span class="comment">// and this rule InlineVariableOpConst has already been executed once.</span></span><br><span class="line">	<span class="keyword">if</span> haveRange == <span class="literal">true</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> varConFilters &#123;</span><br><span class="line">		<span class="keyword">for</span> j := <span class="keyword">range</span> varVarFilters &#123;</span><br><span class="line">			<span class="keyword">for</span> needConverse := <span class="number">0</span>; needConverse &lt;= <span class="number">1</span>; needConverse++ &#123;</span><br><span class="line">				res := c.constructInlineFiltersItem(varConFilters[i], varVarFilters[j], needConverse)</span><br><span class="line">				<span class="comment">// Returns true if a new filter can be generated that is not included in varConFilters.</span></span><br><span class="line">				<span class="keyword">if</span> res.Condition != <span class="literal">nil</span> &amp;&amp; !isContainInArray(res, varConFilters) &#123;</span><br><span class="line">					<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// InlineVariableOpConst performs the inlining detected by CanInlineVariableOpConst.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> InlineVariableOpConst(f memo.FiltersExpr) memo.FiltersExpr &#123;</span><br><span class="line">	varConFilters, varVarFilters, _ := c.classifyFilters(f)</span><br><span class="line">	<span class="keyword">var</span> res memo.FiltersItem</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">var</span> temp memo.FiltersExpr</span><br><span class="line">		<span class="keyword">for</span> i := <span class="keyword">range</span> varConFilters &#123;</span><br><span class="line">			<span class="keyword">for</span> j := <span class="keyword">range</span> varVarFilters &#123;</span><br><span class="line">				<span class="keyword">for</span> needConverse := <span class="number">0</span>; needConverse &lt;= <span class="number">1</span>; needConverse++ &#123;</span><br><span class="line">					res = c.constructInlineFiltersItem(varConFilters[i], varVarFilters[j], needConverse)</span><br><span class="line">					<span class="keyword">if</span> res.Condition != <span class="literal">nil</span> &amp;&amp; !isContainInArray(res, varConFilters) &#123;</span><br><span class="line">						temp = <span class="built_in">append</span>(temp, res)</span><br><span class="line">						f = <span class="built_in">append</span>(f, res)</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> temp == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			varConFilters = <span class="built_in">append</span>(varConFilters, temp...)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// constructInlineFiltersItemForCol colHasBeenFixed and colWillBeFixed are columns in a filter.</span></span><br><span class="line"><span class="comment">// colHasBeenFixed has a comparative const value in another filter, while colWillBeFixed is</span></span><br><span class="line"><span class="comment">// only a part of current filter(the left one in filter).</span></span><br><span class="line"><span class="comment">// For example, a &gt; b and b &gt; 10, a is colWillBeFixed, b is colHasBeenFixed</span></span><br><span class="line"><span class="comment">// Meanwhile, for b &gt; a and b &lt; 10, will be handled as a &lt; b and b &lt; 10,</span></span><br><span class="line"><span class="comment">// a is colWillBeFixed and b is colHasBeenFixed(needConverse = 0).</span></span><br><span class="line"><span class="comment">// If needConverse is 1, filter a &gt; b will be handledn as b &lt; a.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CustomFuncs)</span></span> constructInlineFiltersItem(</span><br><span class="line">	varCon memo.FiltersItem, varVar memo.FiltersItem, needConverse <span class="type">int</span>,</span><br><span class="line">) memo.FiltersItem &#123;</span><br><span class="line">	<span class="keyword">var</span> res memo.FiltersItem</span><br><span class="line"></span><br><span class="line">	<span class="comment">// If xxx is a RangeExpr, xxx.Condition.ChildCount() will be one.</span></span><br><span class="line">	<span class="keyword">if</span> varVar.Condition.ChildCount() &lt; <span class="number">2</span> || varCon.Condition.ChildCount() &lt; <span class="number">2</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;there might be a Expr not in [EqExpr, LeExpr, LtExpr, GeExpr, GtExpr]&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	colWillBeFixed, ok1 := varVar.Condition.Child(needConverse).(*memo.VariableExpr)</span><br><span class="line">	colHasBeenFixed, ok2 := varVar.Condition.Child(<span class="number">1</span> - needConverse).(*memo.VariableExpr)</span><br><span class="line">	op := varVar.Condition.Op()</span><br><span class="line">	conditionVar, ok3 := varCon.Condition.Child(<span class="number">0</span>).(*memo.VariableExpr)</span><br><span class="line">	conditionConst, ok4 := varCon.Condition.Child(<span class="number">1</span>).(*memo.ConstExpr)</span><br><span class="line">	conditionOp := varCon.Condition.Op()</span><br><span class="line">	<span class="keyword">if</span> !ok1 || !ok2 || !ok3 || !ok4 &#123;</span><br><span class="line">		<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;there might be a Expr not in [EqExpr, LeExpr, LtExpr, GeExpr, GtExpr]&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	reverseOption := <span class="function"><span class="keyword">func</span><span class="params">(op opt.Operator)</span></span> opt.Operator &#123;</span><br><span class="line">		<span class="keyword">switch</span> op &#123;</span><br><span class="line">		<span class="keyword">case</span> opt.EqOp:</span><br><span class="line">			<span class="keyword">return</span> opt.EqOp</span><br><span class="line">		<span class="keyword">case</span> opt.LtOp:</span><br><span class="line">			<span class="keyword">return</span> opt.GtOp</span><br><span class="line">		<span class="keyword">case</span> opt.LeOp:</span><br><span class="line">			<span class="keyword">return</span> opt.GeOp</span><br><span class="line">		<span class="keyword">case</span> opt.GtOp:</span><br><span class="line">			<span class="keyword">return</span> opt.LtOp</span><br><span class="line">		<span class="keyword">case</span> opt.GeOp:</span><br><span class="line">			<span class="keyword">return</span> opt.LeOp</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">panic</span>(errors.AssertionFailedf(<span class="string">&quot;there might be a Expr not in [EqExpr, LeExpr, LtExpr, GeExpr, GtExpr]&quot;</span>))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> needConverse == <span class="number">1</span> &#123;</span><br><span class="line">		op = reverseOption(op)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> colHasBeenFixed.Col == conditionVar.Col &#123;</span><br><span class="line">		<span class="keyword">switch</span> op &#123;</span><br><span class="line">		<span class="keyword">case</span> opt.EqOp:</span><br><span class="line">			<span class="keyword">switch</span> conditionOp &#123;</span><br><span class="line">			<span class="keyword">case</span> opt.GtOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructGt(colWillBeFixed, conditionConst))</span><br><span class="line">			<span class="keyword">case</span> opt.GeOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructGe(colWillBeFixed, conditionConst))</span><br><span class="line">			<span class="keyword">case</span> opt.LtOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructLt(colWillBeFixed, conditionConst))</span><br><span class="line">			<span class="keyword">case</span> opt.LeOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructLe(colWillBeFixed, conditionConst))</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> opt.GtOp:</span><br><span class="line">			<span class="keyword">switch</span> conditionOp &#123;</span><br><span class="line">			<span class="keyword">case</span> opt.GtOp, opt.GeOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructGt(colWillBeFixed, conditionConst))</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> opt.GeOp:</span><br><span class="line">			<span class="keyword">switch</span> conditionOp &#123;</span><br><span class="line">			<span class="keyword">case</span> opt.GtOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructGt(colWillBeFixed, conditionConst))</span><br><span class="line">			<span class="keyword">case</span> opt.GeOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructGe(colWillBeFixed, conditionConst))</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> opt.LtOp:</span><br><span class="line">			<span class="keyword">switch</span> conditionOp &#123;</span><br><span class="line">			<span class="keyword">case</span> opt.LtOp, opt.LeOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructLt(colWillBeFixed, conditionConst))</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> opt.LeOp:</span><br><span class="line">			<span class="keyword">switch</span> conditionOp &#123;</span><br><span class="line">			<span class="keyword">case</span> opt.LtOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructLt(colWillBeFixed, conditionConst))</span><br><span class="line">			<span class="keyword">case</span> opt.LeOp:</span><br><span class="line">				res = c.f.ConstructFiltersItem(c.f.ConstructLe(colWillBeFixed, conditionConst))</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>替换规则添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># InlineVariableOpConst inlines variables which are associated to constant</span><br><span class="line"># using operator in &#123; &gt;, &gt;=, &lt;, &lt;=, = &#125;, except the cases that</span><br><span class="line"># InlineConstVar can handle, as in</span><br><span class="line">#   SELECT * FROM foo WHERE a &gt; b AND b &gt; 10.</span><br><span class="line"># =&gt;</span><br><span class="line">#   SELECT * FROM foo WHERE a &gt; b AND b &gt; 10 AND a &gt; 10.</span><br><span class="line">[InlineVariableOpConst, Normalize]</span><br><span class="line">(Select</span><br><span class="line">    $input:*</span><br><span class="line">    $filters:* &amp; (CanInlineVariableOpConst $filters)</span><br><span class="line">)</span><br><span class="line">=&gt;</span><br><span class="line">(Select $input (InlineVariableOpConst $filters))</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>mosquito2333
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://mosquito2333.github.io/2023/02/21/%E8%B0%93%E8%AF%8D%E4%BC%A0%E9%80%92/" title="谓词传递闭包">https://mosquito2333.github.io/2023/02/21/谓词传递/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/21/crdb%E4%B8%AD%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%B8%AD%E7%9A%84order%E4%BF%A1%E6%81%AF%E8%A2%AB%E5%BF%BD%E7%95%A5/" rel="prev" title="crdb中子查询中的order信息被忽略">
+                  <i class="fa fa-chevron-left"></i> crdb中子查询中的order信息被忽略
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/21/pkg-sql-opt-%E5%8C%85%E4%B8%8B%E9%9D%A2%E7%9A%84%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/" rel="next" title="pkg/sql/opt 包下面的代码结构简单介绍">
+                  pkg/sql/opt 包下面的代码结构简单介绍 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito2333</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/mosquito2333" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"mosquito2333","repo":"mosquito2333_comments","client_id":"3efd199fcf375c5193c0","client_secret":"36622e02f9d0533f53f341c10b3b9563e9c9fe03","admin_user":"mosquito2333","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"9ba0746c4a1dda2716ad45a91c523dcd"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
