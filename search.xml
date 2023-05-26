@@ -14,15 +14,6 @@
       </tags>
   </entry>
   <entry>
-    <title>crdb中子查询中的order信息被忽略</title>
-    <url>/2023/02/21/crdb%E4%B8%AD%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%B8%AD%E7%9A%84order%E4%BF%A1%E6%81%AF%E8%A2%AB%E5%BF%BD%E7%95%A5/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>cockroachDB</category>
-        <category>优化器</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Test Oracle Random</title>
     <url>/2022/08/01/Test-Oracle-Random/</url>
     <content><![CDATA[<h3 id="以下测试用例证明where后面的random函数每行数据都会跑一遍"><a href="#以下测试用例证明where后面的random函数每行数据都会跑一遍" class="headerlink" title="以下测试用例证明where后面的random函数每行数据都会跑一遍"></a>以下测试用例证明where后面的random函数每行数据都会跑一遍</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- pg  &amp; crdb</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tr1114(c1 <span class="type">int</span> ,c2 <span class="type">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tr1114 <span class="keyword">select</span> generate_series(<span class="number">1</span>,<span class="number">10000</span>),generate_series(<span class="number">1</span>,<span class="number">10000</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tr1114 <span class="keyword">where</span> c2<span class="operator">=</span><span class="built_in">cast</span>((random()<span class="operator">*</span><span class="number">10000</span>)<span class="keyword">as</span> <span class="type">int</span>);</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id2 <span class="operator">=</span> trunc(random()<span class="operator">*</span><span class="number">10</span>);</span><br><span class="line">id1 <span class="operator">|</span> id2</span><br><span class="line"><span class="comment">-----+-----</span></span><br><span class="line">   <span class="number">4</span> <span class="operator">|</span>   <span class="number">4</span></span><br><span class="line">   <span class="number">7</span> <span class="operator">|</span>   <span class="number">7</span></span><br><span class="line">(<span class="number">2</span> <span class="keyword">rows</span>)</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id2 <span class="operator">=</span> trunc(random()<span class="operator">*</span><span class="number">10</span>);</span><br><span class="line">id1 <span class="operator">|</span> id2</span><br><span class="line"><span class="comment">-----+-----</span></span><br><span class="line">   <span class="number">6</span> <span class="operator">|</span>   <span class="number">6</span></span><br><span class="line">   <span class="number">0</span> <span class="operator">|</span>   <span class="number">0</span></span><br><span class="line">(<span class="number">2</span> <span class="keyword">rows</span>)</span><br><span class="line"></span><br><span class="line">postgres<span class="operator">=</span># <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1 <span class="keyword">where</span> id2 <span class="operator">=</span> trunc(random()<span class="operator">*</span><span class="number">10</span>);</span><br><span class="line">id1 <span class="operator">|</span> id2</span><br><span class="line"><span class="comment">-----+-----</span></span><br><span class="line">   <span class="number">5</span> <span class="operator">|</span>   <span class="number">5</span></span><br><span class="line">(<span class="number">1</span> <span class="type">row</span>)</span><br></pre></td></tr></table></figure>
@@ -51,6 +42,15 @@
         <tag>oracle</tag>
         <tag>function</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>crdb中子查询中的order信息被忽略</title>
+    <url>/2023/02/21/crdb%E4%B8%AD%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%B8%AD%E7%9A%84order%E4%BF%A1%E6%81%AF%E8%A2%AB%E5%BF%BD%E7%95%A5/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>cockroachDB</category>
+        <category>优化器</category>
+      </categories>
   </entry>
   <entry>
     <title>crdb的float类型</title>
@@ -248,6 +248,45 @@
       </tags>
   </entry>
   <entry>
+    <title>oracle的连接和explain</title>
+    <url>/2022/08/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/</url>
+    <content><![CDATA[<h2 id="一、连接oracle"><a href="#一、连接oracle" class="headerlink" title="一、连接oracle"></a>一、连接oracle</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sunbindeMacBook-Pro:proj sunbin$ ssh root@10.16.30.84</span><br><span class="line">oracle@10.16.30.84&#x27;s password: 111111</span><br><span class="line">[oracle@tc84 ~]$ unset http_proxy https_proxy</span><br><span class="line">sqlplus /nolog</span><br><span class="line">conn c##xl/cxl</span><br></pre></td></tr></table></figure>
+
+<h3 id="oracle运行一个csv文件，并将结果输出到一个文件"><a href="#oracle运行一个csv文件，并将结果输出到一个文件" class="headerlink" title="oracle运行一个csv文件，并将结果输出到一个文件"></a>oracle运行一个csv文件，并将结果输出到一个文件</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span>  sqlplus c##xl<span class="operator">/</span>cxl</span><br><span class="line">spool <span class="keyword">on</span></span><br><span class="line">spool <span class="operator">/</span>root<span class="operator">/</span>mosquito_test<span class="operator">/</span>mosquito_test.csv</span><br><span class="line">@<span class="operator">/</span>root<span class="operator">/</span>mosquito_test<span class="operator">/</span>mosquito_test.sql</span><br><span class="line">spool off</span><br><span class="line">quit</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、六种查看执行计划的方法"><a href="#二、六种查看执行计划的方法" class="headerlink" title="二、六种查看执行计划的方法"></a>二、六种查看执行计划的方法</h2><p>（1）explain plan for<br>（2）set autotrace on<br>（3）statistics_level&#x3D;all<br>（4）dbms_xplan.display_cursor获取<br>（5）事件10046 trace跟踪<br>（6）awrsqrpt.sql</p>
+<h3 id="Oracle提供了6种执行计划获取方法，各种方法侧重点不同。"><a href="#Oracle提供了6种执行计划获取方法，各种方法侧重点不同。" class="headerlink" title="Oracle提供了6种执行计划获取方法，各种方法侧重点不同。"></a>Oracle提供了6种执行计划获取方法，各种方法侧重点不同。</h3><h3 id="第一种-：explain-for"><a href="#第一种-：explain-for" class="headerlink" title="第一种 ：explain for"></a>第一种 ：explain for</h3><pre><code>步骤一：explain paln for  查询sql语句
+步骤二：select * from table(dbms_xplan.display());
+</code></pre>
+<p>&#x2F;*<br>优点：无需真正执行，快捷方便；<br>缺点：1.没有输出相关统计信息，例如产生了多少逻辑读，多少次物理读，多少次递归调用的情况；<br>2.无法判断处理了多少行；<br>3.无法判断表执行了多少次<br>*&#x2F;</p>
+<h3 id="第二种：set-autotrace-on"><a href="#第二种：set-autotrace-on" class="headerlink" title="第二种：set autotrace on"></a>第二种：set autotrace on</h3><pre><code>  步骤一：sql&gt; set autotrace on traceonly;
+
+  步骤二：sql&gt; 执行查询Sql语句
+
+  步骤三：sql&gt; set autotrace off;
+</code></pre>
+<p>&#x2F;*<br>优点：1.可以输出运行时的相关统计信息（产生多少逻辑读、多少次递归调用、多少次物理读等）；<br>2.虽然要等语句执行完才能输出执行计划，但是可以有traceonly开关来控制返回结果不打屏输出；<br>缺点：1.必须要等SQL语句执行完，才出结果；<br>2.无法看到表被访问了多少次；<br>*&#x2F;</p>
+<h3 id="第三种：（3）statistics-level-x3D-all"><a href="#第三种：（3）statistics-level-x3D-all" class="headerlink" title="第三种：（3）statistics_level&#x3D;all"></a>第三种：（3）statistics_level&#x3D;all</h3><p>步骤一：ALTER SESSION SET STATISTICS_LEVEL&#x3D;ALL;<br>步骤二：执行待分析的SQL<br>步骤三：select * from table(dbms_xplan.display_cursor(null,null,’allstats last’));<br>&#x2F;*<br>关键字解读：<br>1.starts：SQL执行的次数；<br>2.E-Rows：执行计划预计返回的行数；<br>3.R-Rows：执行计划实际返回的行数；<br>4.A-Time：每一步执行的时间(HH:MM:SS.FF)，根据这一行可知SQL耗时在哪些地方；<br>5.Buffers：每一步实际执行的逻辑读或一致性读；<br>6.Reads：物理读；<br>7.OMem：OMem为最优执行模式所需的内存评估值， 这个数据是由优化器统计数据以及前一次执行的性能数据估算得出的；<br>8.1Mem：1Mem为one-pass模式所需的内存评估值，当工作区大小无法满足操作所需的大小时，需要将部分数据写入临时磁盘空间中(如果仅需要写入一次就可以完成操作，就称一次通过，One-Pass;否则为多次通过，Multi-Pass).该列数据为语句最后一次执行中，单次写磁盘所需要的内存大小，这个由优化器统计数据以及前一次执行的性能数据估算得出的<br>9.Used_Mem：Used-Mem则为当前操作实际执行时消耗的内存，括号里面为(发生磁盘交换的次数,1次即为One-Pass,大于1次则为Multi_Pass,如果没有使用磁盘，则显示0)<br>*&#x2F;</p>
+<p>&#x2F;*<br>优点：1.可以清晰的从starts得出表被访问多少次；<br>2.可以从E-Rows和A-Rows得到预测的行数和真实的行数，从而可以准确判断Oracle评估是否准确；<br>3.虽然没有准确的输出运行时的相关统计信息，但是执行计划中的Buffers就是真实的逻辑读的数值；<br>缺点：1.必须要等执行完后才能输出结果；<br>2.无法控制结果打屏输出，不像autotrace可以设置traceonly保证不输出结果；<br>3.看不出递归调用，看不出物理读的数值<br>*&#x2F;</p>
+<h3 id="第四种：dbms-xplan-display-cursor获取"><a href="#第四种：dbms-xplan-display-cursor获取" class="headerlink" title="第四种：dbms_xplan.display_cursor获取"></a>第四种：dbms_xplan.display_cursor获取</h3><pre><code>步骤1：select * from table( dbms_xplan.display_cursor(&#39;&amp;sql_id&#39;) );    --该方法是从共享池得到，如果SQL已被age out出share pool，则查找不到
+</code></pre>
+<p>注释：<br>1.还有1种方法，select * from table( dbms_xplan.display_awr(‘&amp;sql_id’) );  –该方法是从awr性能视图里面获取<br>2.如果有多个执行计划，可用以下方法查出：<br>select * from table(dbms_xplan.display_cursor(‘&amp;sql_id’,0));<br>select * from table(dbms_xplan.display_cursor(‘&amp;s ql_id’,1));</p>
+<p>&#x2F;*<br>优点：1.知道sql_id即可得到执行计划，与explain plan for一样无需执行；<br>2.可得到真实的执行计划</p>
+<p>缺点：1.没有输出运行的统计相关信息；<br>2.无法判断处理了多少行；<br>3.无法判断表被访问了多少次；<br>*&#x2F;</p>
+<h3 id="第五种：事件10046-trace跟踪"><a href="#第五种：事件10046-trace跟踪" class="headerlink" title="第五种：事件10046 trace跟踪"></a>第五种：事件10046 trace跟踪</h3><p>&#x2F;*<br>步骤1：alter session set events ‘10046 trace name context forever,level 12’;            –开启追踪<br>步骤2：执行sql语句；<br>步骤3：alter session set events ‘10046 trace name context off’;                                 –关闭追踪<br>步骤4：select tracefile from v$process where addr&#x3D;(select paddr from v$session where sid&#x3D;(select sid from v$mystat where rownum&lt;&#x3D;1));       –找到跟踪后产生的文件<br>步骤5：tkprof  trc文件    生成目标文件  sys&#x3D;no sort&#x3D;prsela,exeela,fchela                           –格式化命令<br>*&#x2F;</p>
+<h3 id="第六种：awrsqrpt-sql"><a href="#第六种：awrsqrpt-sql" class="headerlink" title="第六种：awrsqrpt.sql"></a>第六种：awrsqrpt.sql</h3><p>&#x2F;*<br>步骤1：@?&#x2F;rdbms&#x2F;admin&#x2F;awrsqrpt.sql<br>步骤2：选择你要的断点（begin snap和end snap）<br>步骤3：输入要查看的sql_id<br>*&#x2F;</p>
+<p>例子：<br>见：使用awrsqrpt.sql查看执行计划demo</p>
+<h3 id="如何选择"><a href="#如何选择" class="headerlink" title="如何选择"></a>如何选择</h3><p>选择时一般遵循以下规则：<br>1.如果sql执行很长时间才出结果或返回不了结果，用方法1：explain plan for<br>2.跟踪某条sql最简单的方法是方法1：explain plan for，其次是方法2：set autotrace on<br>3.如果相关查询某个sql多个执行计划的情况，只能用方法4：dbms_xplan.display_cursor或方法6：awrsqrpt.sql<br>4.如果sql中含有函数，函数中有含有sql，即存在多层调用，想准确分析只能用方法5：10046追踪<br>5.想法看到真实的执行计划，不能用方法1：explain plan for和方法2：set autotrace on<br>6.想要获取表被访问的次数，只能用方法3：statistics_level &#x3D; all</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>oracle</tag>
+        <tag>test</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>opt官方文档解读</title>
     <url>/2023/01/01/opt%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E8%A7%A3%E8%AF%BB/</url>
     <content><![CDATA[<h2 id="地址指路"><a href="#地址指路" class="headerlink" title="地址指路"></a>地址指路</h2><p><a href="https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/">https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/</a></p>
@@ -336,105 +375,6 @@
       </categories>
       <tags>
         <tag>cockroachDB</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>oracle的连接和explain</title>
-    <url>/2022/08/08/oracle%E7%9A%84%E8%BF%9E%E6%8E%A5%E5%92%8Cexplain/</url>
-    <content><![CDATA[<h2 id="一、连接oracle"><a href="#一、连接oracle" class="headerlink" title="一、连接oracle"></a>一、连接oracle</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sunbindeMacBook-Pro:proj sunbin$ ssh root@10.16.30.84</span><br><span class="line">oracle@10.16.30.84&#x27;s password: 111111</span><br><span class="line">[oracle@tc84 ~]$ unset http_proxy https_proxy</span><br><span class="line">sqlplus /nolog</span><br><span class="line">conn c##xl/cxl</span><br></pre></td></tr></table></figure>
-
-<h3 id="oracle运行一个csv文件，并将结果输出到一个文件"><a href="#oracle运行一个csv文件，并将结果输出到一个文件" class="headerlink" title="oracle运行一个csv文件，并将结果输出到一个文件"></a>oracle运行一个csv文件，并将结果输出到一个文件</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SQL</span><span class="operator">&gt;</span>  sqlplus c##xl<span class="operator">/</span>cxl</span><br><span class="line">spool <span class="keyword">on</span></span><br><span class="line">spool <span class="operator">/</span>root<span class="operator">/</span>mosquito_test<span class="operator">/</span>mosquito_test.csv</span><br><span class="line">@<span class="operator">/</span>root<span class="operator">/</span>mosquito_test<span class="operator">/</span>mosquito_test.sql</span><br><span class="line">spool off</span><br><span class="line">quit</span><br></pre></td></tr></table></figure>
-
-<h2 id="二、六种查看执行计划的方法"><a href="#二、六种查看执行计划的方法" class="headerlink" title="二、六种查看执行计划的方法"></a>二、六种查看执行计划的方法</h2><p>（1）explain plan for<br>（2）set autotrace on<br>（3）statistics_level&#x3D;all<br>（4）dbms_xplan.display_cursor获取<br>（5）事件10046 trace跟踪<br>（6）awrsqrpt.sql</p>
-<h3 id="Oracle提供了6种执行计划获取方法，各种方法侧重点不同。"><a href="#Oracle提供了6种执行计划获取方法，各种方法侧重点不同。" class="headerlink" title="Oracle提供了6种执行计划获取方法，各种方法侧重点不同。"></a>Oracle提供了6种执行计划获取方法，各种方法侧重点不同。</h3><h3 id="第一种-：explain-for"><a href="#第一种-：explain-for" class="headerlink" title="第一种 ：explain for"></a>第一种 ：explain for</h3><pre><code>步骤一：explain paln for  查询sql语句
-步骤二：select * from table(dbms_xplan.display());
-</code></pre>
-<p>&#x2F;*<br>优点：无需真正执行，快捷方便；<br>缺点：1.没有输出相关统计信息，例如产生了多少逻辑读，多少次物理读，多少次递归调用的情况；<br>2.无法判断处理了多少行；<br>3.无法判断表执行了多少次<br>*&#x2F;</p>
-<h3 id="第二种：set-autotrace-on"><a href="#第二种：set-autotrace-on" class="headerlink" title="第二种：set autotrace on"></a>第二种：set autotrace on</h3><pre><code>  步骤一：sql&gt; set autotrace on traceonly;
-
-  步骤二：sql&gt; 执行查询Sql语句
-
-  步骤三：sql&gt; set autotrace off;
-</code></pre>
-<p>&#x2F;*<br>优点：1.可以输出运行时的相关统计信息（产生多少逻辑读、多少次递归调用、多少次物理读等）；<br>2.虽然要等语句执行完才能输出执行计划，但是可以有traceonly开关来控制返回结果不打屏输出；<br>缺点：1.必须要等SQL语句执行完，才出结果；<br>2.无法看到表被访问了多少次；<br>*&#x2F;</p>
-<h3 id="第三种：（3）statistics-level-x3D-all"><a href="#第三种：（3）statistics-level-x3D-all" class="headerlink" title="第三种：（3）statistics_level&#x3D;all"></a>第三种：（3）statistics_level&#x3D;all</h3><p>步骤一：ALTER SESSION SET STATISTICS_LEVEL&#x3D;ALL;<br>步骤二：执行待分析的SQL<br>步骤三：select * from table(dbms_xplan.display_cursor(null,null,’allstats last’));<br>&#x2F;*<br>关键字解读：<br>1.starts：SQL执行的次数；<br>2.E-Rows：执行计划预计返回的行数；<br>3.R-Rows：执行计划实际返回的行数；<br>4.A-Time：每一步执行的时间(HH:MM:SS.FF)，根据这一行可知SQL耗时在哪些地方；<br>5.Buffers：每一步实际执行的逻辑读或一致性读；<br>6.Reads：物理读；<br>7.OMem：OMem为最优执行模式所需的内存评估值， 这个数据是由优化器统计数据以及前一次执行的性能数据估算得出的；<br>8.1Mem：1Mem为one-pass模式所需的内存评估值，当工作区大小无法满足操作所需的大小时，需要将部分数据写入临时磁盘空间中(如果仅需要写入一次就可以完成操作，就称一次通过，One-Pass;否则为多次通过，Multi-Pass).该列数据为语句最后一次执行中，单次写磁盘所需要的内存大小，这个由优化器统计数据以及前一次执行的性能数据估算得出的<br>9.Used_Mem：Used-Mem则为当前操作实际执行时消耗的内存，括号里面为(发生磁盘交换的次数,1次即为One-Pass,大于1次则为Multi_Pass,如果没有使用磁盘，则显示0)<br>*&#x2F;</p>
-<p>&#x2F;*<br>优点：1.可以清晰的从starts得出表被访问多少次；<br>2.可以从E-Rows和A-Rows得到预测的行数和真实的行数，从而可以准确判断Oracle评估是否准确；<br>3.虽然没有准确的输出运行时的相关统计信息，但是执行计划中的Buffers就是真实的逻辑读的数值；<br>缺点：1.必须要等执行完后才能输出结果；<br>2.无法控制结果打屏输出，不像autotrace可以设置traceonly保证不输出结果；<br>3.看不出递归调用，看不出物理读的数值<br>*&#x2F;</p>
-<h3 id="第四种：dbms-xplan-display-cursor获取"><a href="#第四种：dbms-xplan-display-cursor获取" class="headerlink" title="第四种：dbms_xplan.display_cursor获取"></a>第四种：dbms_xplan.display_cursor获取</h3><pre><code>步骤1：select * from table( dbms_xplan.display_cursor(&#39;&amp;sql_id&#39;) );    --该方法是从共享池得到，如果SQL已被age out出share pool，则查找不到
-</code></pre>
-<p>注释：<br>1.还有1种方法，select * from table( dbms_xplan.display_awr(‘&amp;sql_id’) );  –该方法是从awr性能视图里面获取<br>2.如果有多个执行计划，可用以下方法查出：<br>select * from table(dbms_xplan.display_cursor(‘&amp;sql_id’,0));<br>select * from table(dbms_xplan.display_cursor(‘&amp;s ql_id’,1));</p>
-<p>&#x2F;*<br>优点：1.知道sql_id即可得到执行计划，与explain plan for一样无需执行；<br>2.可得到真实的执行计划</p>
-<p>缺点：1.没有输出运行的统计相关信息；<br>2.无法判断处理了多少行；<br>3.无法判断表被访问了多少次；<br>*&#x2F;</p>
-<h3 id="第五种：事件10046-trace跟踪"><a href="#第五种：事件10046-trace跟踪" class="headerlink" title="第五种：事件10046 trace跟踪"></a>第五种：事件10046 trace跟踪</h3><p>&#x2F;*<br>步骤1：alter session set events ‘10046 trace name context forever,level 12’;            –开启追踪<br>步骤2：执行sql语句；<br>步骤3：alter session set events ‘10046 trace name context off’;                                 –关闭追踪<br>步骤4：select tracefile from v$process where addr&#x3D;(select paddr from v$session where sid&#x3D;(select sid from v$mystat where rownum&lt;&#x3D;1));       –找到跟踪后产生的文件<br>步骤5：tkprof  trc文件    生成目标文件  sys&#x3D;no sort&#x3D;prsela,exeela,fchela                           –格式化命令<br>*&#x2F;</p>
-<h3 id="第六种：awrsqrpt-sql"><a href="#第六种：awrsqrpt-sql" class="headerlink" title="第六种：awrsqrpt.sql"></a>第六种：awrsqrpt.sql</h3><p>&#x2F;*<br>步骤1：@?&#x2F;rdbms&#x2F;admin&#x2F;awrsqrpt.sql<br>步骤2：选择你要的断点（begin snap和end snap）<br>步骤3：输入要查看的sql_id<br>*&#x2F;</p>
-<p>例子：<br>见：使用awrsqrpt.sql查看执行计划demo</p>
-<h3 id="如何选择"><a href="#如何选择" class="headerlink" title="如何选择"></a>如何选择</h3><p>选择时一般遵循以下规则：<br>1.如果sql执行很长时间才出结果或返回不了结果，用方法1：explain plan for<br>2.跟踪某条sql最简单的方法是方法1：explain plan for，其次是方法2：set autotrace on<br>3.如果相关查询某个sql多个执行计划的情况，只能用方法4：dbms_xplan.display_cursor或方法6：awrsqrpt.sql<br>4.如果sql中含有函数，函数中有含有sql，即存在多层调用，想准确分析只能用方法5：10046追踪<br>5.想法看到真实的执行计划，不能用方法1：explain plan for和方法2：set autotrace on<br>6.想要获取表被访问的次数，只能用方法3：statistics_level &#x3D; all</p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>oracle</tag>
-        <tag>test</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>sqllogictest</title>
-    <url>/2022/03/10/sqllogictest/</url>
-    <content><![CDATA[<h3 id="在cockroachDB中设计的位置为pkg-x2F-sql-x2F-logictest-x2F-logic-go"><a href="#在cockroachDB中设计的位置为pkg-x2F-sql-x2F-logictest-x2F-logic-go" class="headerlink" title="在cockroachDB中设计的位置为pkg&#x2F;sql&#x2F;logictest&#x2F;logic.go"></a>在cockroachDB中设计的位置为pkg&#x2F;sql&#x2F;logictest&#x2F;logic.go</h3><p>更多用法也可以参照sqllogictest <a href="https://www.sqlite.org/sqllogictest/doc/trunk/about.wiki">官方文档</a><br>    1、注释：#<br>    2、不要求返回结果的语句（如建表，增删改）：<br>    3、每个语句后接一个SQL命令，预期成功ok，预期失败error<br>        statement ok	#注意末尾不要加  ‘;’<br>        statement error	</p>
-<h3 id="查询语句"><a href="#查询语句" class="headerlink" title="查询语句"></a>查询语句</h3><h4 id="1、预期返回结果并进行比较"><a href="#1、预期返回结果并进行比较" class="headerlink" title="1、预期返回结果并进行比较"></a>1、预期返回结果并进行比较</h4><pre><code>query &lt;type-string&gt; &lt;sort-mode&gt; &lt;label&gt;
-----	#如果不加则返回空集
-&lt;expected result&gt;
-1
-2
-3
-</code></pre>
-<h4 id="2、其中-lt-type-string-gt-返回数据类型，包含有TIR"><a href="#2、其中-lt-type-string-gt-返回数据类型，包含有TIR" class="headerlink" title="2、其中 &lt; type-string&gt;返回数据类型，包含有TIR"></a>2、其中 &lt; type-string&gt;返回数据类型，包含有TIR</h4><pre><code>T-文本
-I-整型
-R-浮点
-B-布尔
-O-行标识符
-</code></pre>
-<h4 id="3、-lt-sort-mode-gt-包含nosort，rowsort，valuesort"><a href="#3、-lt-sort-mode-gt-包含nosort，rowsort，valuesort" class="headerlink" title="3、&lt; sort-mode&gt;包含nosort，rowsort，valuesort"></a>3、&lt; sort-mode&gt;包含nosort，rowsort，valuesort</h4><pre><code>nosort-按数据库输出结果显示（默认）
-rowsort-输出后再进行排序，按照ASCII码排序
-valuesort-和rowsort一样，但是不是按行分组
-</code></pre>
-<h4 id="4、-lt-label-gt"><a href="#4、-lt-label-gt" class="headerlink" title="4、&lt; label&gt;"></a>4、&lt; label&gt;</h4><pre><code>如果添加的话，会保存查询结果备重用
-对于返回结果：
-整型-%d
-浮点-%.3f
-空值-NUL
-空字符串-empty
-控制字符或不可打印的-@
-控制记录
-测试过程中需要控制情况下用下列语句：
-halt
-hash-threshold &lt;max-result-set-size&gt;
-1
-2
-halt停止供调试使用，可以使数据库处于出bug状态
-</code></pre>
-<p>hash-threshold &lt; max-result-set-size&gt;对结果集中的值数量限制，如果超出了数量，则存储所有值得哈希值，而不是存储在脚本中</p>
-<h3 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h3><h4 id="1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句："><a href="#1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句：" class="headerlink" title="1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句："></a>1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句：</h4><pre><code>skipif &lt;database-name&gt;
-onlyif &lt;database-name&gt;
-</code></pre>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>cockroachDB</tag>
-        <tag>logictest</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一些常用的markdown语法</title>
-    <url>/2023/02/17/%E4%B8%80%E4%BA%9B%E5%B8%B8%E7%94%A8%E7%9A%84markdown%E8%AF%AD%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a><a href="https://markdown.com.cn/basic-syntax">官方文档</a></h1><h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1>]]></content>
-      <categories>
-        <category>语言</category>
-      </categories>
-      <tags>
-        <tag>markdown</tag>
       </tags>
   </entry>
   <entry>
@@ -558,6 +498,55 @@ onlyif &lt;database-name&gt;
       </tags>
   </entry>
   <entry>
+    <title>sqllogictest</title>
+    <url>/2022/03/10/sqllogictest/</url>
+    <content><![CDATA[<h3 id="在cockroachDB中设计的位置为pkg-x2F-sql-x2F-logictest-x2F-logic-go"><a href="#在cockroachDB中设计的位置为pkg-x2F-sql-x2F-logictest-x2F-logic-go" class="headerlink" title="在cockroachDB中设计的位置为pkg&#x2F;sql&#x2F;logictest&#x2F;logic.go"></a>在cockroachDB中设计的位置为pkg&#x2F;sql&#x2F;logictest&#x2F;logic.go</h3><p>更多用法也可以参照sqllogictest <a href="https://www.sqlite.org/sqllogictest/doc/trunk/about.wiki">官方文档</a><br>    1、注释：#<br>    2、不要求返回结果的语句（如建表，增删改）：<br>    3、每个语句后接一个SQL命令，预期成功ok，预期失败error<br>        statement ok	#注意末尾不要加  ‘;’<br>        statement error	</p>
+<h3 id="查询语句"><a href="#查询语句" class="headerlink" title="查询语句"></a>查询语句</h3><h4 id="1、预期返回结果并进行比较"><a href="#1、预期返回结果并进行比较" class="headerlink" title="1、预期返回结果并进行比较"></a>1、预期返回结果并进行比较</h4><pre><code>query &lt;type-string&gt; &lt;sort-mode&gt; &lt;label&gt;
+----	#如果不加则返回空集
+&lt;expected result&gt;
+1
+2
+3
+</code></pre>
+<h4 id="2、其中-lt-type-string-gt-返回数据类型，包含有TIR"><a href="#2、其中-lt-type-string-gt-返回数据类型，包含有TIR" class="headerlink" title="2、其中 &lt; type-string&gt;返回数据类型，包含有TIR"></a>2、其中 &lt; type-string&gt;返回数据类型，包含有TIR</h4><pre><code>T-文本
+I-整型
+R-浮点
+B-布尔
+O-行标识符
+</code></pre>
+<h4 id="3、-lt-sort-mode-gt-包含nosort，rowsort，valuesort"><a href="#3、-lt-sort-mode-gt-包含nosort，rowsort，valuesort" class="headerlink" title="3、&lt; sort-mode&gt;包含nosort，rowsort，valuesort"></a>3、&lt; sort-mode&gt;包含nosort，rowsort，valuesort</h4><pre><code>nosort-按数据库输出结果显示（默认）
+rowsort-输出后再进行排序，按照ASCII码排序
+valuesort-和rowsort一样，但是不是按行分组
+</code></pre>
+<h4 id="4、-lt-label-gt"><a href="#4、-lt-label-gt" class="headerlink" title="4、&lt; label&gt;"></a>4、&lt; label&gt;</h4><pre><code>如果添加的话，会保存查询结果备重用
+对于返回结果：
+整型-%d
+浮点-%.3f
+空值-NUL
+空字符串-empty
+控制字符或不可打印的-@
+控制记录
+测试过程中需要控制情况下用下列语句：
+halt
+hash-threshold &lt;max-result-set-size&gt;
+1
+2
+halt停止供调试使用，可以使数据库处于出bug状态
+</code></pre>
+<p>hash-threshold &lt; max-result-set-size&gt;对结果集中的值数量限制，如果超出了数量，则存储所有值得哈希值，而不是存储在脚本中</p>
+<h3 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h3><h4 id="1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句："><a href="#1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句：" class="headerlink" title="1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句："></a>1、statement和query可以使用下列前缀，去跳过某些数据库执行下列语句：</h4><pre><code>skipif &lt;database-name&gt;
+onlyif &lt;database-name&gt;
+</code></pre>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>cockroachDB</tag>
+        <tag>logictest</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>yacc以及crdb中的应用</title>
     <url>/2021/02/07/yacc%E4%BB%A5%E5%8F%8Acrdb%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/</url>
     <content><![CDATA[<h2 id="一、yacc工作原理"><a href="#一、yacc工作原理" class="headerlink" title="一、yacc工作原理"></a>一、yacc工作原理</h2><ul>
@@ -627,6 +616,17 @@ onlyif &lt;database-name&gt;
       </tags>
   </entry>
   <entry>
+    <title>一些常用的markdown语法</title>
+    <url>/2023/02/17/%E4%B8%80%E4%BA%9B%E5%B8%B8%E7%94%A8%E7%9A%84markdown%E8%AF%AD%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a><a href="https://markdown.com.cn/basic-syntax">官方文档</a></h1><h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1>]]></content>
+      <categories>
+        <category>语言</category>
+      </categories>
+      <tags>
+        <tag>markdown</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>基础几何形状花片</title>
     <url>/2023/05/26/%E5%9F%BA%E6%9C%AC%E5%9B%BE%E5%BD%A2%E8%8A%B1%E7%89%87%E5%9B%BE%E8%A7%A3/</url>
     <content><![CDATA[<h3 id="圆形花片"><a href="#圆形花片" class="headerlink" title="圆形花片"></a>圆形花片</h3><h4 id="圆形花片1，一般用来做桌布或者杯垫吧"><a href="#圆形花片1，一般用来做桌布或者杯垫吧" class="headerlink" title="圆形花片1，一般用来做桌布或者杯垫吧"></a>圆形花片1，一般用来做桌布或者杯垫吧</h4><p><img src="/img/images_%E7%BC%96%E7%BB%87/%E7%BA%AF%E8%89%B2%E5%9F%BA%E6%9C%AC%E5%9B%BE%E6%A1%88%E8%8A%B1%E7%89%87%E5%9B%BE%E8%A7%A3/%E5%9C%86%E5%BD%A2%E8%8A%B1%E7%89%87%E5%9B%BE%E8%A7%A31.jpeg"></p>
@@ -640,6 +640,11 @@ onlyif &lt;database-name&gt;
       <tags>
         <tag>生活</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>常用的vim操作</title>
+    <url>/2023/02/22/%E5%B8%B8%E7%94%A8%E7%9A%84vim%E6%93%8D%E4%BD%9C/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>安装postgres</title>
@@ -783,11 +788,6 @@ onlyif &lt;database-name&gt;
       <tags>
         <tag>生活</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>常用的vim操作</title>
-    <url>/2023/02/22/%E5%B8%B8%E7%94%A8%E7%9A%84vim%E6%93%8D%E4%BD%9C/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>钩织吊带</title>
