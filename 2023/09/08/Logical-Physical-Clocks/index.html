@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E5%A4%A7%E6%B5%B7.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Garamond:300,300italic,400,400italic,700,700italic%7CPalatino:300,300italic,400,400italic,700,700italic%7CTrebuchet+MS:300,300italic,400,400italic,700,700italic%7CCourier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mosquito2333.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="混合逻辑时钟论文阅读AbstractThere is a gap between the theory and practice of distributed systems in terms of the use of time. The theory of distributed systems shunned the notion of time, and introduced “causa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logical Physical Clocks">
+<meta property="og:url" content="https://mosquito2333.github.io/2023/09/08/Logical-Physical-Clocks/index.html">
+<meta property="og:site_name" content="一个小仙女的博客">
+<meta property="og:description" content="混合逻辑时钟论文阅读AbstractThere is a gap between the theory and practice of distributed systems in terms of the use of time. The theory of distributed systems shunned the notion of time, and introduced “causa">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mosquito2333.github.io/img/Logical_Physical_Clocks/Figure1.jpg">
+<meta property="og:image" content="https://mosquito2333.github.io/img/Logical_Physical_Clocks/Figure2.jpg">
+<meta property="og:image" content="https://mosquito2333.github.io/img/Logical_Physical_Clocks/Figure3.jpg">
+<meta property="og:image" content="https://mosquito2333.github.io/img/Logical_Physical_Clocks/Figure5.jpg">
+<meta property="og:image" content="https://mosquito2333.github.io/img/Logical_Physical_Clocks/Figure6.jpg">
+<meta property="article:published_time" content="2023-09-08T11:27:04.000Z">
+<meta property="article:modified_time" content="2023-09-13T03:57:37.109Z">
+<meta property="article:author" content="mosquito2333">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mosquito2333.github.io/img/Logical_Physical_Clocks/Figure1.jpg">
+
+
+<link rel="canonical" href="https://mosquito2333.github.io/2023/09/08/Logical-Physical-Clocks/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mosquito2333.github.io/2023/09/08/Logical-Physical-Clocks/","path":"2023/09/08/Logical-Physical-Clocks/","title":"Logical Physical Clocks"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Logical Physical Clocks | 一个小仙女的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">一个小仙女的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">mosquito2333 的 Blogs</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="fa fa-guestbook fa-fw"></i>guestbook</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E9%80%BB%E8%BE%91%E6%97%B6%E9%92%9F%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">混合逻辑时钟论文阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Abstract"><span class="nav-number">1.1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Introduction"><span class="nav-number">1.2.</span> <span class="nav-text">1 Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-Brief-history-of-time"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.1 Brief history of time</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-Contributions-of-this-work"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2 Contributions of this work</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Preliminaries"><span class="nav-number">1.3.</span> <span class="nav-text">2. Preliminaries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-HLC-Hybrid-Logical-Clocks"><span class="nav-number">1.4.</span> <span class="nav-text">3. HLC: Hybrid Logical Clocks</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-Problem-statement"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.1 Problem statement</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-Description-of-the-Naive-Algorithm"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.2 Description of the Naive Algorithm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-HLC-Algorithm"><span class="nav-number">1.4.3.</span> <span class="nav-text">3.3 HLC Algorithm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-Properties-of-HLC"><span class="nav-number">1.4.4.</span> <span class="nav-text">3.4 Properties of HLC</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Resilience-of-HLC"><span class="nav-number">1.5.</span> <span class="nav-text">4 Resilience of HLC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-Self-stabilization"><span class="nav-number">1.5.1.</span> <span class="nav-text">4.1 Self-stabilization</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-Masking-of-synchronization-errors"><span class="nav-number">1.5.2.</span> <span class="nav-text">4.2 Masking of synchronization errors</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Experiments"><span class="nav-number">1.6.</span> <span class="nav-text">5 Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-AWS-deployment-results"><span class="nav-number">1.6.1.</span> <span class="nav-text">5.1 AWS deployment results</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mosquito2333"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">mosquito2333</p>
+  <div class="site-description" itemprop="description">随遇而安，寂静生长。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mosquito2333" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mosquito2333" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:3030823975@qq.com" title="E-Mail → mailto:3030823975@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/mosquito201809" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;mosquito201809" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;shi-zai-bu-zhi-dao-qi-shi-yao-ming-zi-44" rel="noopener me" target="_blank"><i class="fab fa-zhihu fa-fw"></i>ZhiHu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/sun_liwen" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;sun_liwen" rel="noopener me" target="_blank"><i class="fab fa-gitee fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+	<div class="post-block animated fadeIn">
+		<h5 class="post-title" itemprop="name headline">
+			<a target="_blank" rel="noopener" href="https://github.com/mosquito2333" class="post-title-link" itemprop="url">Github Contribution Calendar</a>
+		</h5>
+		<div class="post-body animated fadeInDown" itemprop="articleBody">
+			<img style="width: 100%; margin-top: 30px;" src="https://ghchart.rshah.org/e77c8e/mosquito2333" alt="mosquito2333's Blue Github Chart" />
+		</div>
+	</div>
+      
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mosquito2333.github.io/2023/09/08/Logical-Physical-Clocks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="mosquito2333">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个小仙女的博客">
+      <meta itemprop="description" content="随遇而安，寂静生长。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Logical Physical Clocks | 一个小仙女的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Logical Physical Clocks
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-09-08 19:27:04" itemprop="dateCreated datePublished" datetime="2023-09-08T19:27:04+08:00">2023-09-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-09-13 11:57:37" itemprop="dateModified" datetime="2023-09-13T11:57:37+08:00">2023-09-13</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="混合逻辑时钟论文阅读"><a href="#混合逻辑时钟论文阅读" class="headerlink" title="混合逻辑时钟论文阅读"></a>混合逻辑时钟论文阅读</h2><h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>There is a gap between the theory and practice of distributed systems in terms of the use of time. The theory of distributed systems shunned the notion of time, and introduced “causality tracking” as a clean abstraction to reason about concurrency. The practical systems employed physical time (NTP) information but in a best effort manner due to the difficulty of achieving tight clock synchronization. In an effort to bridge this gap and reconcile the theory and practice of distributed systems on the topic of time, we propose a hybrid logical clock, HLC, that combines the best of logical clocks and physical clocks. HLC captures the causality relationship like logical clocks, and enables easy identification of consistent snapshots in distributed systems. Dually, HLC can be used in lieu of physical&#x2F;NTP clocks since it maintains its logical clock to be always close to the NTP clock. Moreover HLC fits in to 64 bits NTP timestamp format, and is masking tolerant to NTP kinks and uncertainties. We show that HLC has many benefits for wait-free transaction ordering and performing snapshot reads in multiversion globally distributed databases.</p>
+<p>在时间的使用方面，分布式系统的理论与实践之间存在差距。分布式系统理论回避了时间概念，并引入了 “causality tracking(因果关系跟踪?)”作为一种简洁的抽象概念来重新考虑并发性。实际系统采用物理时间（NTP）信息，但由于难以实现紧密的时钟同步，只能尽力而为。为了弥合这一差距，协调分布式系统在时间问题上的理论和实践，我们提出了一种混合逻辑时钟（HLC），它结合了逻辑时钟和物理时钟的优点。HLC 能像逻辑时钟一样捕捉因果关系，并能在分布式系统中轻松识别一致的快照。此外，HLC 还可用于替代物理&#x2F;NTP 时钟，因为它能保持逻辑时钟始终接近 NTP 时钟。此外，HLC 符合 64 位 NTP 时间戳格式，并能容忍 NTP 的扭结和不确定性。我们展示了 HLC 在多版本全局分布式数据库的无等待事务排序和快照读取方面的诸多优势。</p>
+<h3 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h3><h4 id="1-1-Brief-history-of-time"><a href="#1-1-Brief-history-of-time" class="headerlink" title="1.1 Brief history of time"></a>1.1 Brief history of time</h4><p>Time is an illusion. – Albert Einstein</p>
+<p><strong>Logical clock (LC)</strong>. LC [12] was proposed in 1978 by Lamport as a way of timestamping and ordering events in a distributed system. LC is divorced from physical time (e.g., NTP clocks): the nodes do not have access to clocks, there is no bound on message delay and on the speed&#x2F;rate of processing of nodes. The causality relationship captured, called happened-before (hb), is defined based on passing of information, rather than passing of time. While being beneficial for the theory of distributed systems, LC is impractical for today’s distributed systems: 1) Using LC, it is not possible to query events in relation to physical time. 2) For capturing hb, LC assumes that all communication occurs in the present system and there are no backchannels. This is obsolete for today’s integrated, loosely-coupled system of systems.</p>
+<p>逻辑时钟（LC）。LC [12] 由 Lamport 于 1978 年提出，是一种在分布式系统中对事件进行时间标记和排序的方法。LC 脱离了物理时间（如 NTP 时钟）：节点无法访问时钟，对消息延迟和节点处理速度&#x2F;速率没有限制。所捕捉到的因果关系被称为 “之前发生”（happened-before，hb），是基于信息传递而非时间传递来定义的。虽然 LC 有利于分布式系统理论，但对于当今的分布式系统来说并不实用： 1) 使用 LC 无法查询与物理时间相关的事件。2) 为了捕捉 hb，LC 假设所有通信都发生在当前系统中，不存在反向信道。这对于当今集成的、松散耦合的系统来说已经过时。</p>
+<p>In 1988, the vector clock (VC) [7, 19] was proposed to maintain a vectorized version of LC. VC maintains a vector at each node which tracks the knowledge this node has about the logical clocks of other nodes. While LC finds one consistent snapshot (that with same LC values at all nodes involved), VC finds all possible consistent snapshots, which is useful for debugging applications. In Figure 1, while LC would find (a,w) as a consistent cut, VC would also identify (b,w), (c,w) as consistent cuts. Unfortunately, the space requirement of VC is on the order of nodes in the system, and is prohibitive.</p>
+<p>1988 年，矢量时钟（VC）[7, 19]被提出来维护逻辑时钟的矢量化版本。VC 在每个节点维护一个向量，跟踪该节点对其他节点逻辑时钟的消息。LC 会找到一个一致的快照（所有相关节点的 LC 值相同），而 VC 则会找到所有可能的一致快照，这对调试应用非常有用。在图 1 中，LC 会找到（a,w）作为一致切点，而 VC 也会找到（b,w）、（c,w）作为一致切点。遗憾的是，VC 所需的空间与系统中节点的数量级相当，令人望而却步。</p>
+<p><strong>Physical Time (PT)</strong>. PT leverages on physical clocks at nodes that are synchronized using the <em><strong>Network Time Protocol (NTP)</strong></em> [20]. Since perfect clock synchronization is infeasible for a distributed system, there are uncertainty intervals associated with PT. While PT avoids the disadvantages of LC by using physical time for timestamping, it introduces new disadvantages: 1) When the uncertainty intervals are overlapping, PT cannot order events. NTP can usually maintain time to within tens of milliseconds over the public Internet, and can achieve one millisecond accuracy in local area networks under ideal conditions, however, asymmetric routes and network congestion can occasionally cause errors of 100 ms or more. 2) PT has several kinks such as leap seconds [13, 14] and non-monotonic updates to POSIX time [8] which may cause the timestamps to go backwards.</p>
+<p><strong>物理时间（PT）</strong>。PT 利用节点上的物理时钟，通过网络时间协议（NTP）[20] 实现同步。由于分布式系统不可能实现完美的时钟同步，因此 PT 存在不确定性区间。虽然 PT 通过使用物理时间作为时间戳来避免 LC 的缺点，但它也带来了新的缺点： 1) 当不确定区间重叠时，PT 无法对事件排序。NTP 通常可以在公共互联网上将时间保持在几十毫秒之内，在局域网中，在理想条件下可以达到 1 毫秒的精度，但是，非对称路由和网络拥塞偶尔会导致 100 毫秒或更大的误差。2) PT 存在一些问题，如闰秒 [13, 14] 和对 POSIX 时间的非单调更新 [8]，可能导致时间戳倒退。</p>
+<p><img src="/img/Logical_Physical_Clocks/Figure1.jpg" alt="Figure1"></p>
+<p>TrueTime (TT). TrueTime is proposed recently by Google for developing Spanner [2], a multiversion distributed database. TT relies on a well engineered tight clock synchronization available at all nodes thanks to GPS clocks and atomic clocks made available at each cluster. While TT avoids some of the disadvantages of LC&#x2F;VC&#x2F;PT, it introduces new disadvantages: 1) TT requires special hardware and a custom-build tight clock synchronization protocol, which is infeasible for many systems (e.g., using leased nodes from public cloud providers). 2) If TT is used for ordering events that respect causality then it is essential that if e hb f then tt.e &lt; tt.f . Since TT is purely based on clock synchronization of physical clocks, to satisfy this constraint, Spanner delays event f when necessary. Such delays and reduced concurrency are prohibitive especially under looser clock synchronization.</p>
+<p>TrueTime (TT)。TrueTime 是谷歌最近为开发多版本分布式数据库 Spanner [2] 而提出的。由于每个集群都有 GPS 时钟和原子钟，TT 依靠精心设计的紧密时钟同步在所有节点上实现。虽然 TT 避免了 LC&#x2F;VC&#x2F;PT 的一些缺点，但也带来了新的缺点： 1) TT 需要特殊的硬件和定制的紧密时钟同步协议，这对许多系统（如使用从公共云提供商租用的节点）来说是不可行的。2) 如果使用 TT 对事件进行排序，并尊重因果关系，那么如果 e hb f，则tt.e &lt; tt.f。由于 TT 完全基于物理时钟的时钟同步，为了满足这一约束，Spanner 会在必要时延迟事件 f。这种延迟和并发性的降低令人望而却步，尤其是在时钟同步较松的情况下。</p>
+<p><img src="/img/Logical_Physical_Clocks/Figure2.jpg" alt="Figure2"></p>
+<p><strong>HybridTime (HT)</strong>. HT, which combines VC and PT clocks, was proposed for solving the stabilizing causal deterministic merge problem [10]. HT maintains a VC at each node which includes knowledge this node has about the PT clocks of other nodes. HT exploits the clock synchronization assumption of PT clocks to trim entries from VC and reduces the overhead of causality tracking. In practice the size of HT at a node would only depend on the number of nodes that communicated with that node within the last ε time, where ε denotes the clock synchro- nization uncertainty. Recently, Demirbas and Kulkarni [3] explored how HT can be adopted to solve the consistent snapshot problem in Spanner [2].</p>
+<p><strong>混合时间（HybridTime，HT）</strong>。HT 结合了 VC 和 PT 时钟，是为解决the stabilizing causal deterministic merge problem [10]而提出的。HT 在每个节点维护一个 VC，其中包括该节点对其他节点 PT 时钟的消息。HT 利用 PT 时钟的时钟同步假定，从 VC 中裁剪entry，减少因果关系跟踪的开销。实际上，节点 HT 的大小只取决于在最后 ε 时间内与该节点通信的节点数量，其中 ε 表示时钟同步的不确定性。最近，Demirbas 和 Kulkarni [3]探讨了如何利用 HT 来解决 Spanner [2] 中的一致快照问题。</p>
+<h4 id="1-2-Contributions-of-this-work"><a href="#1-2-Contributions-of-this-work" class="headerlink" title="1.2 Contributions of this work"></a>1.2 Contributions of this work</h4><p>In this paper we aim to bridge the gap between the theory (LC) and practice (PT) of timekeeping and timestamping in distributed systems and to provide guarantees that gen- eralize and improve that of TT.</p>
+<p>本文旨在弥合分布式系统中计时和时间戳理论（LC）与实践（PT）之间的差距，并提供可继承和改进 TT 理论的保证</p>
+<ul>
+<li><p>We present a logical clock version of HT, which we name as Hybrid Logical Clocks (HLC). HLC refines both the physical clock (similar to PT and TT) and the logical clock (similar to LC). HLC maintains its logical clock to be always close to the NTP clock, and hence, HLC can be used in lieu of physical&#x2F;NTP clock in several applications such as snapshot reads in distributed key value stores and databases. Most importantly, HLC preserves the property of logical clocks (e hb f ⇒ hlc.e &lt; hlc.f) and as such HLC can identify and return consistent global snapshots without needing to wait out clock synchronization uncertainties and without needing prior coordination, in a posteriori fashion.</p>
+</li>
+<li><p>我们提出了 HT 的逻辑时钟版本，并将其命名为混合逻辑时钟（HLC）。HLC 精炼了物理时钟（类似于 PT 和 TT）和逻辑时钟（类似于 LC）。HLC 保持其逻辑时钟始终接近 NTP 时钟，因此，在分布式键值存储和数据库的快照读取等多个应用中，HLC 可以代替物理&#x2F;NTP 时钟。最重要的是，HLC 保留了逻辑时钟的属性（e hb f ⇒ hlc.e &lt; hlc.f），因此，HLC 可以识别并返回一致的全局快照，而无需等待时钟同步的不确定性，也无需事先协调，只需随后进行。</p>
+</li>
+<li><p>HLC is backwards compatible with NTP, and fits in the 64 bits NTP timestamp format. Moreover, HLC works as a superposition on the NTP protocol (i.e., HLC only reads the physical clocks and does not update them) so HLC can run alongside applications using NTP without any interference. Furthermore HLC is general and does not require a server-client architecture. HLC works for a peer-to-peer node setup across WAN deployment, and allows nodes to use different NTP servers.<br>In Section 3, we present the HLC algorithm and prove a tight bound on the space requirements of HLC and show that the bound suffices for HLC to capture the LC property for causal reasoning.</p>
+</li>
+<li><p>HLC 向下兼容 NTP，符合 64 位 NTP 时间戳格式。此外，HLC 是 NTP 协议的叠加（即 HLC 只读取物理时钟，而不更新它们），因此 HLC 可以与使用 NTP 的应用程序同时运行，而不会受到任何干扰。此外，HLC 具有通用性，不需要服务器-客户端架构。HLC 适用于跨广域网部署的对等节点设置，并允许节点使用不同的 NTP 服务器。<br>在第 3 节中，我们介绍了 HLC 算法，并证明了对 HLC 空间需求的严格限制，还证明了该限制足以让 HLC 捕捉到因果推理的 LC 属性。</p>
+</li>
+<li><p>HLC provides masking tolerance to common NTP problems (including nonmonotonous time updates) and can make progress and capture causality information even when time synchronization has degraded. HLC is also self-stabilizing fault-tolerant and is resilient to arbitrary corruptions of the clock variables, as we discuss in Section 4.</p>
+</li>
+<li><p>HLC 对常见的 NTP 问题（包括非单调的时间更新）具有掩蔽容错能力，即使在时间同步性降低的情况下，也能取得进展并捕捉因果关系。正如我们在第 4 节中讨论的那样，HLC 还具有自稳定容错能力，能抵御时钟变量的任意破坏。</p>
+</li>
+<li><p>We implement HLC and provide experiment results of HLC deployments under various deployment scenarios. In Section 5, we show that even under stresstesting, HLC is bounded and the size of the clocks remain small. These practical bounds are much smaller than the theoretical bounds proved in our analysis. Our HLC implementation is made available in an anonymized manner at <a target="_blank" rel="noopener" href="https://github.com/AugmentedTimeProject">https://github.com/AugmentedTimeProject</a></p>
+</li>
+<li><p>我们实现了 HLC，并提供了各种部署情况下 HLC 部署的实验结果。在第 5 节中，我们展示了即使在压力测试下，HLC 也是有边界的，而且时钟的大小也很小。这些实际界限远小于我们分析中证明的理论界限。我们的 HLC 实现以匿名方式发布在 <a target="_blank" rel="noopener" href="https://github.com/AugmentedTimeProject(%E4%BD%86%E6%98%AF%E8%BF%99%E4%B8%AA%E7%BD%91%E5%9D%80%E7%8E%B0%E5%9C%A8%E6%98%AF%E6%89%93%E4%B8%8D%E5%BC%80%E7%9A%84)%E4%B8%8A%E3%80%82">https://github.com/AugmentedTimeProject(但是这个网址现在是打不开的)上。</a></p>
+</li>
+<li><p>HLC has direct applications in identifying consistent snapshots in distributed databases [2, 11, 15, 16, 22, 24]. It is also useful in many distributed systems protocols including causal message logging in distributed systems [1], Byzantine fault-tolerance protocols [9], distributed debugging [21], distributed filesystems [18], and distributed transactions [25]. In Section 6, we showcase the benefits of HLC for snapshot reads in distributed databases.</p>
+</li>
+<li><p>HLC 可直接应用于识别分布式数据库中的一致快照 [2, 11, 15, 16, 22, 24]。它在许多分布式系统协议中也很有用，包括分布式系&gt;统中的因果消息日志[1]、拜占庭容错协议[9]、分布式调试[21]、分布式文件系统[18]和分布式事务[25]。在第 6 节中，我们展示了 HLC 在分布式数据库快照读取方面的优势。</p>
+</li>
+</ul>
+<h3 id="2-Preliminaries"><a href="#2-Preliminaries" class="headerlink" title="2. Preliminaries"></a>2. Preliminaries</h3><p>序言</p>
+<p>A distributed system consists of a set of nodes whose number may change over time. Each node can perform three types of actions, a send action, a receive action, and a local action. The goal of a timestamping algorithm is to assign a timestamp to each event. We denote a timestamping algorithm with an all capital letters name, and the timestamp assigned by this algorithm by the corresponding lower case name. E.g., we use LC to denote the logical clock algorithm by Lamport [12], and use lc.e to denote the timestamp assigned to event e by this algorithm.</p>
+<p>分布式系统由一组节点组成，这些节点的数量可能会随时间发生变化。每个节点可以执行三种操作：发送操作、接收操作和本地操作。时间戳算法的目标是为每个事件分配一个时间戳。我们用全大写字母的名称表示时间戳算法，用小写字母的名称表示该算法分配的时间戳。例如，我们用 LC 表示 Lamport [12] 的逻辑时钟算法，用 lc.e 表示该算法分配给事件 e 的时间戳。</p>
+<p>The notion of happened before <strong>hb</strong> captures the causal relation between events in the system. As defined in [12], event e happened before event f (denoted by e hb f) is a transitive relation that respects the following: e and f are events on the same node and e occurred before f , or e is a send event and f is the corresponding receive event. We say that e and f are concurrent, denoted by e||f, iff ¬(e hb f)∧¬(f hb e).</p>
+<p>hb 之前发生的概念捕捉了系统中事件之间的因果关系。根据 [12] 中的定义，事件 e 发生在事件 f 之前（用 e hb f 表示）是一种传递关系，符合以下条件：e 和 f 是同一节点上的事件，且 e 发生在 f 之前，或者 e 是发送事件，而 f 是相应的接收事件。如果 满足¬(e hb f)∧¬(f hb e)，则 e 和 f 是并发的，用 e||f 表示。</p>
+<p>Based on the existing results in the literature, the following are true:<br>根据现有的文献结果，以下推论(属于推论还是原理呢？或者别的)是正确的:</p>
+<p>e hb f ⇒ lc.e &lt; lc.f<br>lc.e &#x3D; lc.f ⇒ e||f<br>e hb f ⇔ vc.e &lt; vc.f</p>
+<p>However, the following claims are not true:<br>然而，以下说法是不正确的:</p>
+<p>e hb f ⇐ lc.e &lt; lc.f<br>lc.e &#x3D; lc.f ⇐ e||f<br>e hb f ⇒ pt.e &lt; pt.f</p>
+<h3 id="3-HLC-Hybrid-Logical-Clocks"><a href="#3-HLC-Hybrid-Logical-Clocks" class="headerlink" title="3. HLC: Hybrid Logical Clocks"></a>3. HLC: Hybrid Logical Clocks</h3><p>In this section, we introduce our HLC algorithm starting with a naive solution first. We then prove correctness and tight bounds on HLC. We also elaborate on the useful features of the HLC for distributed systems.<br>在这个章节，我们首先介绍我们的HLC算法。然后，我们将证明HLC的正确性和紧约束。我们还阐述了HLC在分布式系统中的实用功能。</p>
+<h4 id="3-1-Problem-statement"><a href="#3-1-Problem-statement" class="headerlink" title="3.1 Problem statement"></a>3.1 Problem statement</h4><p>问题陈述</p>
+<p>The goal of HLC is to provide one-way causality detection similar to that provided by LC, while maintaining the clock value to be always close to the physical&#x2F;NTP clock. The formal problem statement for HLC is as follows.<br>Given a distributed system, assign each event e a timestamp, l.e, such that:</p>
+<p>HLC 的目标是提供与 LC 类似的单向因果关系检测，同时保持时钟值始终接近物理&#x2F;NTP 时钟。HLC 的正式问题陈述如下。<br>给定一个分布式系统，为每个事件 e 分配一个时间戳 l.e，使得：</p>
+<ol>
+<li>e hb f ⇒ l.e &lt; l.f,</li>
+<li>Space requirement for l.e is O(1) integers,</li>
+<li>l.e is represented with bounded space,</li>
+<li>l.e is close to pt.e, i.e., |l.e − pt.e| is bounded.</li>
+</ol>
+<p>The first requirement captures one-way causality information provided by HLC. The second requirement captures that the space required for l.e is O(1) integers. To prevent encoding of several integers into one large integer, we require that any update of l.e is achieved by O(1) operations. The third requirement captures that the space required to represent l.e is bounded, i.e., it does not grow in an unbounded fashion. In practice, we like l.e to be the size of pt.e, which is 64 bits in the NTP protocol.</p>
+<p>第一个要求是捕捉 HLC 提供的单向因果关系信息。第二个要求确保 l.e 所需的空间为 O(1) 个整数。为了防止将多个整数编码成一个大整数，我们要求 l.e 的任何更新都要通过 O(1) 次操作来实现。第三个要求是，表示 l.e 所需的空间是有界的，即不会无限制地增长。实际上，我们希望 l.e 的大小与 pt.e 相同，在 NTP 协议中为 64 位。</p>
+<p>Finally, the last requirement states that l.e should be close to pt.e. This enables us to utilize HLC in place of PT. To illustrate this consider the case where the designer wants to take a snapshot at (physical) time t. Given that physical clocks are not perfectly synchronized, it is not possible to get a consistent snapshot by just reading state at different nodes at time t as shown in Figure 2. On the other hand, using HLC we can obtain such a snapshot by taking the snapshot of every node at logical time t. Such a snapshot is guaranteed to be consistent, because from the HLC requirement 1 we have l.e &#x3D; l.f ⇒ e||f. In Section 6, we discuss in more detail how HLC enables users to take uncoordinated a-posteriori consistent snapshots of the distributed system state.</p>
+<p>最后，最后一个要求规定 l.e 应接近 pt.e。这使我们能够利用 HLC 代替 PT。考虑到物理时钟并不完全同步，仅仅通过读取不同节点在 t 时间的状态是不可能获得一致的快照的，如图 2 所示。另一方面，利用 HLC，我们可以通过获取逻辑时间 t 时每个节点的快照来获得这样的快照。这样的快照保证是一致的，因为根据 HLC 要求 1，我们有 l.e &#x3D; l.f ⇒ e||f。在第 6 节中，我们将更详细地讨论 HLC 如何让用户对分布式系统状态进行非协调的后验一致性快照。</p>
+<p><img src="/img/Logical_Physical_Clocks/Figure3.jpg" alt="Figure3"></p>
+<h4 id="3-2-Description-of-the-Naive-Algorithm"><a href="#3-2-Description-of-the-Naive-Algorithm" class="headerlink" title="3.2 Description of the Naive Algorithm"></a>3.2 Description of the Naive Algorithm</h4><p>基础算法的描述</p>
+<p>Given the goal that l.e should be close to pt.e, in the naive algorithm we begin with the rule: for any event e, l.e ≥ pt.e. We design our algorithm as shown in Figure 3. This algorithm works similar to LC. Initially all l values are set to 0. When a send event, say f , is created on node j, we set l.f to be max(l.e+1, pt.j), where e is the previous event on node j. This ensures l.e &lt; l.f. It also ensures that l.f ≥ pt.f. Likewise, when a receive event f is created on node j, l.f is set to max(l.e+1, l.m+1, pt.j), where l.e is the timestamp of the previous event on j, and l.m is the timestamp of the message (and, hence, the send event). This ensures that l.e &lt; l.f and l.m &lt; l.f.</p>
+<p>考虑到 l.e 应该接近 pt.e，在基础算法中，我们从规则开始：对于任何事件 e，l.e ≥ pt.e。我们按照Figure3所示设计算法。该算法的工作原理与 LC 类似。初始时，所有 l 值都设为 0。当节点 j 上创建了一个发送事件（如 f）时，我们将 l.f 设为 max(l.e+1,pt.j)，其中 e 是节点 j 上的前一个事件，这确保了 l.e &lt; l.f。 同样，当在节点 j 上创建接收事件 f 时，l.f 设置为 max(l.e+1,l.m+1,pt.j)，其中 l.e 是 j 上前一个事件的时间戳，l.m 是信息的时间戳（因此也是发送事件的时间戳）。这确保了 l.e &lt; l.f，l.m &lt; l.f。</p>
+<p>It is easy to see that the algorithm in Figure 3 satisfies the first two requirements in the problem statement. However, this naive algorithm violates the fourth requirement, which also leads to a violation of the third requirement for bounded space representation. To show the violation of the fourth requirement, we point to the counterexample in Figure 4 which shows how |l.e − pt.e| grows in an unbounded fashion. The messaging loop among nodes 1, 2, and 3 can be repeated forever, and at each turn of the loop the drift between logical clock and physical clock (the l − pt difference) will keep growing.</p>
+<p>不难看出，图 3 中的算法满足了问题陈述中的前两个要求。然而，这种基础算法违反了第四项要求，也导致违反了有界空间表示的第三项要求。为了说明违反第四项要求的情况，我们引用图 4 中的反例来说明|l.e - pt.e| 是如何以无约束的方式增长的。节点 1、2 和 3 之间的消息传递循环可以永远重复，而在循环的每一圈，逻辑时钟和物理时钟之间的漂移（l - pt 差）都会不断增加。</p>
+<p>The root of the unbounded drift problem is due to the naive algorithm using l to maintain both the maximum of pt values seen so far and the logical clock increments from new events (local, send, receive). This makes the clocks lose information: it becomes unclear if the new l value came from pt (as in the message from node 0 to node 1) or from causality (as is the case for the rest of messages). As such, there is no suitable place to reset l value to bound the l − pt difference, because resetting l may lead to losing the hb relation, and, hence, a violation of requirement 1.</p>
+<p>无限制漂移问题的根源在于基础算法使用 l 来维持迄今为止所看到的最大 pt 值，以及新事件（本地、发送、接收）带来的逻辑时钟增量。这使得时钟丢失了信息：新的 l 值是来自 pt（如节点 0 发往节点 1 的信息）还是来自因果关系（如其他信息）变得不清楚。&gt;因此，没有合适的地方来重置 l 值以约束 l - pt 差值，因为重置 l 可能导致失去 hb 关系，从而违反要求 1。</p>
+<p>Note that the counterexample holds even with the re- quirement that the physical clock of a node is incremented by at least one between any two events on that node. Figure 4 satisfies this constraint between pt and l, yet still |l − pt| keeps growing unboundedly. However, there are conditions under which the counterexample does not work, and the naive algorithm suffices for solving the HLC problem. If we assume that the time for send event and receive event is long enough so that the physical clock of every node is incremented by at least one, then the counterexample on Figure 4 fails, and the naive algorithm would be able to maintain |l − pt| bounded.</p>
+<p>请注意，即使重新要求节点的物理时钟在该节点上的任意两个事件之间至少递增一个，反例仍然成立。图 4 满足了 pt 和 l 之间的这一约束，但 |l - pt| 仍在无限制地增长。然而，在某些条件下，反例不起作用，而天真算法足以解决 HLC 问题。如果我们假设发送事件和接收事件的时间足够长，以至于每个节点的物理时钟都至少递增了一个，那么图 4 上的反例就失效了，而天真算法将能够保持 |l - pt| 有界。</p>
+<p>Instead of depending on assumptions on physical clock rate and event generation rate across all nodes in the system for proving the correctness and boundedness of HLC, we show how to properly implement HLC next.</p>
+<p>为了证明 HLC 的正确性和有界性，我们不再依赖于对系统中所有节点的物理时钟速率和事件生成速率的假设，而是展示了如何正确实现 HLC。</p>
+<h4 id="3-3-HLC-Algorithm"><a href="#3-3-HLC-Algorithm" class="headerlink" title="3.3 HLC Algorithm"></a>3.3 HLC Algorithm</h4><p>HLC 算法</p>
+<p>All problems in computer science can be solved by another level of indirection. –David Wheeler<br>计算机科学中的所有问题都可以通过另一个间接层次来解决。</p>
+<p>We use our observations from the counterexample to develop the correct HLC algorithm. In this algorithm, the l.j in the naive algorithm is expanded to two parts: l.j and c.j. The first part l.j is introduced as a level of indirection to maintain the maximum of pt information learned so far, and c is used for capturing causality updates only when l values are equal.</p>
+<p>我们利用反例中的观察结果，开发出正确的 HLC 算法。在该算法中，天真算法中的 l.j 被扩展为两部分：l.j 和 c.j。第一部分 l.j 是作为间接层次引入的，以最大限度地保留迄今为止所学到的 pt 信息，而 c 则仅在 l 值相等时用于捕捉因果关系更新。</p>
+<p>In contrast to the naive algorithm where there was no suitable place to reset l without violating hb , in the HLC algorithm, we can reset c when the information heard about maximum pt catches up or goes ahead of l. Since l denotes the maximum pt heard among nodes and is not continually incremented with each event, within a bounded time, either one of the following is guaranteed to occur: 1) a node receives a message with a larger l, and its l is updated and c is reset to reflect this, or 2) if the node does not hear from other nodes, then its l stays the same, and its pt will catch up and update its l, and reset the c.</p>
+<p>在基础算法中，没有合适的地方可以在不违反 hb 的情况下重置 l，而在 HLC 算法中，当接收的最大 pt 信息赶上或超过 l 时，我们可以重置 c。 由于 l 表示节点间听到的最大 pt 值，并且不会随着每次事件的发生而持续递增，因此在一定时间内，可以保证发生以下任一事件： 1) 节点收到的信息的 l 更大，它的 l 会更新，c 也会重置以反映这一点；或者 2) 如果节点没有收到其他节点的信息，那么它的 l 保持不变，它的 pt 会赶上并更新它的 l，同时重置 c。</p>
+<p><img src="/img/Logical_Physical_Clocks/Figure5.jpg" alt="Figure5"></p>
+<p>The HLC algorithm is as shown in Figure 5. Initially, l and c values are set to 0. When a new send event f is created, l.j is set to max(l.e, pt.j), where e is the previous event on j. Similar to the naive algorithm, this ensures that l.j ≥ pt.j. However, because we have removed the “+1”, it is possible that l.e equals l.f. To deal with this, we utilize the value of c.j . By incrementing c.j , we ensure that ⟨l.e, c.e⟩ &lt; ⟨l.f, c.f ⟩ is true with lexicographic comparison.If l.e differs from l.f then c.j is reset, and this allows us to guarantee that c values remain bounded. When a new receive event is created, l.j is set to max(l.e, l.m, pt.j). Now, depending on whether l.j equals l.e, l.m, both or neither, c.j is set.</p>
+<p>HLC 算法如图 5 所示。初始时，l 和 c 值均设为 0。当创建一个新的发送事件 f 时，l.j 设为 max(l.e，pt.j)，其中 e 是 j 上的前一个事件。和基础算法类似，这可以保证l.j ≥ pt.j 。然而，由于我们去掉了 “+1”，l.e 有可能等于 l.f。为了解决这个问题，我们利用 c.j 的值。通过递增 c.j，我们可以确保⟨l.e, c.e⟩ &lt; ⟨l.f,c.f⟩通过词典比较为真。如果 l.e 与 l.f 不同，c.j 将被重置，这样我们就能保证 c 值保持有界。当创建一个新的接收事件时，l.j 将被设置为 max(l.e,l.m,pt.j)。现在，根据 l.j 是否等于 l.e、l.m、两者都等于或两者都不等于，c.j 将被设置。</p>
+<p>Let’s reconsider the counterexample to the naive algorithm. This example replayed with the HLC algorithm is shown in Figure 6. When we continue the loop among nodes 1, 2, 3, we see that pt at nodes 1, 2 and 3 catches up and exceeds l &#x3D; 10 and resets c to 0. This keeps the c variable bounded at each node.</p>
+<p>让我们来重新考虑基础算法的反例。用 HLC 算法重演的这个例子如图 6 所示。当我们继续在节点 1、2、3 之间循环时，我们会发现节点 1、2、3 的 pt 会赶上并超过 l &#x3D; 10，从而将 c 重置为 0。这在每个节点上保持了 c 的可变边界。</p>
+<p><img src="/img/Logical_Physical_Clocks/Figure6.jpg" alt="Figure6"></p>
+<p>To prove the correctness of the HLC algorithm, first we show that it satisfies requirement 1 and can be used for LC. This follows easily from how l and c values are updated in the algorithm.</p>
+<p>为了证明 HLC 算法的正确性，我们首先要证明它满足要求 1，并可用于 LC。从算法中 l 和 c 值的更新方式不难看出这一点。</p>
+<p><strong>Theorem 1.</strong> For any two events e and f, e hb f ⇒ (l.e, c.e) &lt; (l.f, c.f )</p>
+<p>Next, we show that HLC satisfies requirement 4, which asserts that the HLC value is close to PT. Based on how l is updated in the algorithm, it is easy to see Theorem 2.<br>接下来，我们证明 HLC 满足要求 4，即 HLC 值接近 PT。根据算法中 l 的更新方式，很容易得出定理 2。</p>
+<p><strong>Theorem 2.</strong> For any event f, l.f ≥ pt.f</p>
+<p><strong>Theorem 3.</strong> l.f denotes the maximum clock value that f is aware of. In other words,<br>l.f &gt; pt.f ⇒ (∃g : g hb f ∧ pt.g &#x3D; l.f)</p>
+<p>Proof. We prove this by induction, as new events are created. In the initial state, the statement is trivially satisfied. Consider the case where a new event f is created.</p>
+<ul>
+<li><p>If f is a send event and e is the previous event, then by induction, we have<br>l.e &gt; pt.e ⇒ (∃g : g hb e ∧ pt.g &#x3D; l.e)<br>Furthermore, from the HLC algorithm, if l.f &gt; pt.f<br>then l.f &#x3D; l.e. Also, e hb f is true.<br>Hence, we have l.f &gt; pt.f ⇒ (∃g : g hb f ∧ pt.g &#x3D; l.f).</p>
+</li>
+<li><p>If f is a receive event. Let e be the previous event on the same node and m the received message.<br>Once again, if l.f &gt; pt.f is true then l.f equals l.e or l.m. The analysis of each of these cases is similar to the previous case. Hence, we have<br>l.f &gt; pt.f ⇒ (∃g : g hb f ∧ pt.g &#x3D; l.f).</p>
+</li>
+</ul>
+<p>Using Theorem 3, we can show that |l − pt| is bounded. </p>
+<p><strong>Corollary 1.</strong> For any event f, |l.f − pt.f| ≤ ε</p>
+<p>Proof. We cannot have two events e and f such that e hb f and pt.e &gt; pt.f + ε due to clock synchronization constraints. Hence, from Theorem 3, this theorem follows.</p>
+<p>Finally, we prove requirement 3, by showing that c value of HLC is bounded as well. To this end, we extend Theorem 3 to identify the relation of c and events created at a particular time. As we show in Theorem 4, c.f captures information regarding events created at time l.f.</p>
+<p><strong>Theorem 4.</strong> For any event f, c.f &#x3D; k ∧ k &gt; 0<br>⇒ (∃g1,g2,··· ,gk :<br>(∀j:1≤j&lt;k:gi hbgi+1) ∧ (∀j:1≤j≤k:l.(gi)&#x3D;l.f) ∧ gk hbf)</p>
+<p>Proof. We prove this by induction. This is trivially sat- isfied in the initial state. Also, if c.f is set to 0 then this statement is trivially satisfied.</p>
+<p>In creation of send event, c.f is set to c.e + 1 only if l.e equals l.f . By induction, there exists a sequence of length c.e that satisfies the statement of the theorem. Moreover, e hb f and ¬(e hb e). Hence, there exists a sequence of c.e + 1 (&#x3D;c.f ) that satisfies the statement of the theorem.<br>A similar analysis also applies for the receive event whenc.f issettoc.e+1orc.m+1.</p>
+<p>From Theorem 4, the following two corollaries follow.</p>
+<p><strong>Corollary 2</strong>. For any event f,<br>c.f ≤ |{g : g hb f ∧ l.g &#x3D; l.f)}|.</p>
+<p><strong>Corollary3</strong>. Foranyeventf,c.f≤N∗(ε+1)</p>
+<p><strong>Proof</strong>. From Corollary 2, for any event f, c.f ≤ |{g : g hb f ∧ l.g &#x3D; l.f)}|. Also, from Theorem 2, l.g ≥ pt.g. Also, by clock synchronization assumption of g hb f then pt.g ≤ pt.f + ε. Hence, the only events that can fall into theset{g : ghbf∧l.g &#x3D; l.f)}arethosethatwere created when physical time of the node that created them was between [l.f, l.f + ε]. By our constraint that physical clock of a node is incremented by at least one between any two events on that node, there are at most ε + 1 such events on any one node. Hence, the corollary follows.</p>
+<p>While the above bound is almost tight, adding a small reasonable assumption can substantially reduce the bound on c, and thereby reducing the space that needs to be allocated for that.</p>
+<p><strong>Assumption to reduce the bound on c further</strong>: We assume that the time for message transmission is long enough so that the physical clock of every node is incremented by at least d, where d is a given parameter.</p>
+<p>Now, consider the situation where c.f &#x3D; k, k &gt; 0, at node j. From the above assumption, from Theorem 4, we have a sequence of k events g1, g2, · · · , gk that satisfy the conditions in Theorem 4. In other words, l.(g1) &#x3D; l.f. Let l denote the node where g1 was created. Hence, when g1 was created, pt.l was at least equal to l.f. By assumption about clock synchronization, when f is created pt.l is at least l.f + (k − 1) ∗ d. Given clock synchronization constraints, this must be less than pt.f + ε. Simplifying this, k is less than ε&#x2F;d + 1 + (pt.f − l.f ). From Theorem 2, we have</p>
+<p><strong>Corollary 4</strong>. Under the assumption made above, c.f is at most ε&#x2F;d + 1.</p>
+<p>Recall that for d ≥ 1, the counterexample in Figure 4 does not hold, and the naive algorithm would become boundable and also satisfy the HLC requirements. The difference between the HLC algorithm and the naive al- gorithm is that the HLC algorithm did not need this as- sumption to show that it is bounded, but only to reduce the size of the bound.</p>
+<h4 id="3-4-Properties-of-HLC"><a href="#3-4-Properties-of-HLC" class="headerlink" title="3.4 Properties of HLC"></a>3.4 Properties of HLC</h4><p>HLC algorithm is designed for arbitrary distributed ar- chitecture and is also readily applicable to other environ- ments such as the client-server model.</p>
+<p>We intentionally chose to implement HLC as a super- position on NTP. In other words, HLC only reads the physical clock but does not update it. Hence, if a node re- ceives a message whose timestamp is higher, we maintain this information via l and c instead of changing the phys- ical clock. This is crucial in ensuring that other programs that use NTP alone are not affected. This also avoids the potential problem where clocks of nodes are synchronized with each other even though they drift substantially from real wall-clock. Furthermore, there are impossibility re- sults showing that accepting even tiny unsynchronization to adjust the clocks can lead to diverging clocks [6]. Fi- nally, while HLC utilizes NTP for synchronization, it does not depend on it. In particular, even when physical clocks utilize any ad hoc clock synchronization algorithm [17],HLC can be superposed on top of such a service, so can also be used in ad hoc networks.</p>
+<h3 id="4-Resilience-of-HLC"><a href="#4-Resilience-of-HLC" class="headerlink" title="4 Resilience of HLC"></a>4 Resilience of HLC</h3><h4 id="4-1-Self-stabilization"><a href="#4-1-Self-stabilization" class="headerlink" title="4.1 Self-stabilization"></a>4.1 Self-stabilization</h4><p>Here we discuss how we design self-stabilizing [4] fault- tolerance to HLC, which enables HLC to be eventually restored to a legitimate state, even when HLC is per- turbed&#x2F;corrupted to an arbitrary state.</p>
+<p>Stabilization of HLC rests on the superposition prop- erty of HLC on NTP clocks. Since HLC does not modify the NTP clock, it does not interfere with the NTP correct- ing&#x2F;synchronizing the physical clock of the node. Once the physical&#x2F;NTP clock stabilizes, HLC can be corrected based on observations in Theorem 2 and Corollaries 3 and 2. These results identify the maximum permitted value of l−pt and the maximum value of c. In the event of extreme clock errors by NTP or transient memory corruption, the application may reach a state where these bounds are vi- olated. In that case, we take the physical clock as the authority, and reset l and c values to pt and 0 respectively. In other words the stabilization of HLC follows that of stabilization of pt via NTP clock.</p>
+<p>In order to contain the spread of corruptions due to bad HLC values, we have a rule to ignore out of bounds mes- sages. We simply ignore reception of messages that cause l value to diverge too much from pt. This prevention ac- tion fires if the sender of the message is providing a clock value that is significantly higher suggesting the possibility of corrupted clock. In order to contain corruptions to c, we make its space bounded, so that even when it is corrupted, its corruption space is limited. This way c would in the worst case roll over, or more likely, c would be reset to an appropriate value as a result of l being assigned a new value from pt or from another l received in a message.</p>
+<p>Note that both the reset correction action and the ignore out-of-bounds message action are local correction actions at a node. If HLC fires either of these actions, it also logs the offending entries for inspection and raises an excep- tion to notify the administrator.</p>
+<h4 id="4-2-Masking-of-synchronization-errors"><a href="#4-2-Masking-of-synchronization-errors" class="headerlink" title="4.2 Masking of synchronization errors"></a>4.2 Masking of synchronization errors</h4><p>In order to make HLC resilient to common NTP syn- chronization errors, we assign sufficiently large space to l − pt drift so that most (99.9%) NTP kinks can be masked smoothly. While Theorem 2 and Corollaries 3 and 2 state that l − pt stay within ε the clock synchronization uncer- tainty (crudely two times the NTP offset value), we set a very conservative value, ∆, on the l − pt bound. The bound ∆ can be set to a constant factor of ε, and even on the order of seconds depending on the application seman- tics. This way we tolerate and mask common NTP clock synchronization errors within normal operation of HLC. And when ∆ bound is violated, the local reset correction action and the ignore message prevention action fire as discussed in the previous subsection.</p>
+<p>Using this approach, HLC is robust to stragglers, nodes with pt stuck slightly in the past. Consider a node that lost connection to its NTP server and its clock started drifting behind the NTP time. Such a straggler can still keep up with the system for some time and maintain up-to-date and bounded HLC time: As long as it receives messages from other nodes, it will learn new&#x2F;higher l values and adopt them. This node will increment its c by 1 when it does not adopt a new l value, but this does not cause the c rise excessively for the other nodes in the system. Even if this node sends a message with high c number, the other nodes will have up-to-date time and ignore that c and will use c &#x3D; 0. Similarly, HLC is also robust to the rushers, nodes with pt slightly ahead of others. The masking tol- erance of HLC makes it especially useful for last write wins (LWW) database systems like Cassandra [8, 14]. We investigate this tolerance empirically in the next section.</p>
+<h3 id="5-Experiments"><a href="#5-Experiments" class="headerlink" title="5 Experiments"></a>5 Experiments</h3><h4 id="5-1-AWS-deployment-results"><a href="#5-1-AWS-deployment-results" class="headerlink" title="5.1 AWS deployment results"></a>5.1 AWS deployment results</h4><p>The experiments used Amazon AWS xlarge instances run- ning Ubuntu 14.04. The machines were synchronized to a stratum 2 NTP server, 0.ubuntu.pool.ntp.org. In our basic setup, we programmed all the instances to send messages to each other continuously using TCP sock- ets, and in a separate thread receive messages addressed to them. The total messages sent range from 75,000 to 425,000.</p>
+<p>Using the basic setup (all nodes are senders and send- ing to each other) within the same AWS region, we get the following results. The value “c” indicates that the value of the c component of the HLC at the nodes. The remaining columns show the frequency: the percentage of times the HLC at the nodes had the corresponding c values out of the total number of events. For each setup, we collected data with two different NTP synchronization levels, indi- cated by the average offset of nodes’ clocks from NTP. When we allow the NTP daemons at the nodes more time (a couple hours) to synchronize, we get lower NTP off- set values. We used “ntpdc -c loopinfo” and “ntpdc -c kerninfo” calls to obtain the NTP offset information at the nodes.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>Buy me a coffee</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/weixin.jpg" alt="mosquito2333 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/zhifubao.jpg" alt="mosquito2333 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>mosquito2333
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://mosquito2333.github.io/2023/09/08/Logical-Physical-Clocks/" title="Logical Physical Clocks">https://mosquito2333.github.io/2023/09/08/Logical-Physical-Clocks/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/08/19/%E9%9D%92%E6%8F%90%E5%A4%96%E5%A5%97%E5%9B%BE%E8%A7%A3/" rel="prev" title="青提外套图解">
+                  <i class="fa fa-chevron-left"></i> 青提外套图解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mosquito2333</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/mosquito2333" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"mosquito2333","repo":"mosquito2333_comments","client_id":"3efd199fcf375c5193c0","client_secret":"36622e02f9d0533f53f341c10b3b9563e9c9fe03","admin_user":"mosquito2333","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"f6fc7e0cd47adaa7a03eec1fcfff78a7"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
